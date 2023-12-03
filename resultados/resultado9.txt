@@ -1,0 +1,72 @@
+postgres=# \c dojo
+You are now connected to database "dojo" as user "postgres".
+dojo=# EXPLAIN ANALYZE
+SELECT emp_id, nome, dep_id, salario, AVG(salario) OVER (PARTITION BY dep_id)
+FROM empregados;
+                                                      QUERY PLAN
+-----------------------------------------------------------------------------------------------------------------------
+ WindowAgg  (cost=5.32..7.07 rows=100 width=51) (actual time=29.617..29.737 rows=100 loops=1)
+   ->  Sort  (cost=5.32..5.57 rows=100 width=19) (actual time=29.600..29.611 rows=100 loops=1)
+         Sort Key: dep_id
+         Sort Method: quicksort  Memory: 32kB
+         ->  Seq Scan on empregados  (cost=0.00..2.00 rows=100 width=19) (actual time=29.482..29.508 rows=100 loops=1)
+ Planning Time: 74.039 ms
+ Execution Time: 43.615 ms
+(7 rows)
+
+dojo=# EXPLAIN ANALYZE
+SELECT emp_id, nome, dep_id, salario, AVG(salario) OVER (PARTITION BY dep_id)
+FROM empregados;
+                                                     QUERY PLAN                                                      
+---------------------------------------------------------------------------------------------------------------------
+ WindowAgg  (cost=5.32..7.07 rows=100 width=51) (actual time=0.066..0.124 rows=100 loops=1)
+   ->  Sort  (cost=5.32..5.57 rows=100 width=19) (actual time=0.054..0.059 rows=100 loops=1)
+         Sort Key: dep_id
+         Sort Method: quicksort  Memory: 32kB
+         ->  Seq Scan on empregados  (cost=0.00..2.00 rows=100 width=19) (actual time=0.009..0.020 rows=100 loops=1)
+ Planning Time: 0.037 ms
+ Execution Time: 0.149 ms
+(7 rows)
+
+dojo=# EXPLAIN ANALYZE
+SELECT emp_id, nome, dep_id, salario, AVG(salario) OVER (PARTITION BY dep_id)
+FROM empregados;
+                                                     QUERY PLAN                                                      
+---------------------------------------------------------------------------------------------------------------------
+ WindowAgg  (cost=5.32..7.07 rows=100 width=51) (actual time=0.051..0.103 rows=100 loops=1)
+   ->  Sort  (cost=5.32..5.57 rows=100 width=19) (actual time=0.042..0.046 rows=100 loops=1)
+         Sort Key: dep_id
+         Sort Method: quicksort  Memory: 32kB
+         ->  Seq Scan on empregados  (cost=0.00..2.00 rows=100 width=19) (actual time=0.009..0.019 rows=100 loops=1)
+ Planning Time: 0.040 ms
+ Execution Time: 0.129 ms
+(7 rows)
+
+dojo=# EXPLAIN ANALYZE
+SELECT emp_id, nome, dep_id, salario, AVG(salario) OVER (PARTITION BY dep_id)
+FROM empregados;
+                                                     QUERY PLAN                                                      
+---------------------------------------------------------------------------------------------------------------------
+ WindowAgg  (cost=5.32..7.07 rows=100 width=51) (actual time=0.090..0.203 rows=100 loops=1)
+   ->  Sort  (cost=5.32..5.57 rows=100 width=19) (actual time=0.076..0.086 rows=100 loops=1)
+         Sort Key: dep_id
+         Sort Method: quicksort  Memory: 32kB
+         ->  Seq Scan on empregados  (cost=0.00..2.00 rows=100 width=19) (actual time=0.016..0.038 rows=100 loops=1)
+ Planning Time: 0.053 ms
+ Execution Time: 0.243 ms
+(7 rows)
+
+dojo=# EXPLAIN ANALYZE
+SELECT emp_id, nome, dep_id, salario, AVG(salario) OVER (PARTITION BY dep_id)
+FROM empregados;
+                                                     QUERY PLAN
+---------------------------------------------------------------------------------------------------------------------
+ WindowAgg  (cost=5.32..7.07 rows=100 width=51) (actual time=0.119..0.286 rows=100 loops=1)
+   ->  Sort  (cost=5.32..5.57 rows=100 width=19) (actual time=0.103..0.117 rows=100 loops=1)
+         Sort Key: dep_id
+         Sort Method: quicksort  Memory: 32kB
+         ->  Seq Scan on empregados  (cost=0.00..2.00 rows=100 width=19) (actual time=0.014..0.047 rows=100 loops=1)
+ Planning Time: 0.061 ms
+ Execution Time: 0.331 ms
+(7 rows)
+
