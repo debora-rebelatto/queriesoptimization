@@ -1,6 +1,7 @@
 # Trabalho prático A3 - Otimização de consultas (05/12 - duplas)
 
 [Relatório](./relatorio.md)
+
 [Link Docs Descrição da tarefa](https://docs.google.com/document/d/18HfXRSnD8DmN3SrCVPxFZPG-TSMB1Aw97SYm6ffIHcs/edit)
 
 ## Descrição
@@ -44,36 +45,30 @@ sudo service postgresql start
    /proc/sys/vm/drop_caches" as in that question)
 3. Start the database server (e.g. sudo service postgresql start, sudo systemctl start postgresql)
 
-## Instruções Dojo SQL
-
 ## Setup
 
 - Clonar o repositorio:
-  `git clone `https://github.com/dbguilherme/Sql-dojo.git
 
-- Para a base de dados de teste: Rodar o script:
-  a`psql -h loclhost -U postgres -d postgres -f script.sql `
+```bash
+git clone https://github.com/dbguilherme/Sql-dojo.git
+```
+
+- Para a base de dados de teste, rodar o script:
+
+```bash
+psql -h loclhost -U postgres -d postgres -f script.sql
+```
 
 **Se não tiver Python instalado:**
 **Ubuntu**
 
 Abra o Terminal `Ctrl + Alt + T`
 
-Rode o comando:
+Rode os comandos:
 
 ```bash
 sudo apt update
-```
-
-Instale o Python:
-
-```bash
 sudo apt install python3
-```
-
-Instale as dependências:
-
-```bash
 sudo apt-get install build-dep python-psycopg2
 pip install psycopg2-binary
 ```
@@ -83,10 +78,16 @@ pip install psycopg2-binary
 - Em `create_data/data.py` atualize a linha 29 com a senha do seu usuário do postgres
 
 - Para a base de dados de produção: rodar o script create_data/data.py
-  `python3 create_data/data.py`
+
+```bash
+python3 create_data/data.py
+```
 
 - Acessar o terminal
-  `sudo -u postgres psql postgres`
-  \c dojo
+
+```bash
+sudo -u postgres psql postgres
+\c dojo
+```
 
 **As respostas para as consultas estão no arquivo `dojo.sql`**
