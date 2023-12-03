@@ -1,0 +1,212 @@
+sudo service postgresql stop
+sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
+sudo service postgresql start
+sudo -u postgres psql postgres
+
+Query 1:
+dojo=# EXPLAIN ANALYZE
+SELECT e.nome as "empregado", e2.nome as "chefe" , e.salario as "emp sal" , e2.salario as "chef sal"
+FROM empregados e
+JOIN empregados e2 ON e.supervisor_id = e2.emp_id
+WHERE e2.salario < e.salario;
+
+                                                       QUERY PLAN
+------------------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=3.25..6.88 rows=33 width=22) (actual time=58.590..58.619 rows=50 loops=1)
+   Hash Cond: (e.supervisor_id = e2.emp_id)
+   Join Filter: (e2.salario < e.salario)
+   Rows Removed by Join Filter: 50
+   ->  Seq Scan on empregados e  (cost=0.00..2.00 rows=100 width=15) (actual time=43.958..43.965 rows=100 loops=1)
+   ->  Hash  (cost=2.00..2.00 rows=100 width=15) (actual time=14.602..14.603 rows=100 loops=1)
+         Buckets: 1024  Batches: 1  Memory Usage: 13kB
+         ->  Seq Scan on empregados e2  (cost=0.00..2.00 rows=100 width=15) (actual time=0.011..0.028 rows=100 loops=1)
+ Planning Time: 139.868 ms
+ Execution Time: 58.724 ms
+(10 rows)
+
+
+Query 2:
+dojo=# EXPLAIN ANALYZE
+SELECT d.dep_id as x, max(salario) as y
+FROM departamentos d JOIN empregados e
+ON e.dep_id = d.dep_id
+GROUP BY d.dep_id;
+                                                         QUERY PLAN                                                          
+-----------------------------------------------------------------------------------------------------------------------------
+ HashAggregate  (cost=5.62..5.95 rows=33 width=8) (actual time=49.984..49.990 rows=31 loops=1)
+   Group Key: d.dep_id
+   Batches: 1  Memory Usage: 24kB
+   ->  Hash Join  (cost=1.74..5.12 rows=100 width=8) (actual time=49.926..49.954 rows=99 loops=1)
+         Hash Cond: (e.dep_id = d.dep_id)
+         ->  Seq Scan on empregados e  (cost=0.00..2.00 rows=100 width=8) (actual time=35.308..35.314 rows=100 loops=1)
+         ->  Hash  (cost=1.33..1.33 rows=33 width=4) (actual time=14.572..14.572 rows=33 loops=1)
+               Buckets: 1024  Batches: 1  Memory Usage: 10kB
+               ->  Seq Scan on departamentos d  (cost=0.00..1.33 rows=33 width=4) (actual time=0.171..0.179 rows=33 loops=1)
+ Planning Time: 92.897 ms
+ Execution Time: 50.141 ms
+(11 rows)
+
+Query 3:
+dojo=# EXPLAIN ANALYZE SELECT dep_id, nome, salario
+FROM empregados
+WHERE (dep_id,salario)
+IN (SELECT dep_id, MAX(salario)
+FROM empregados
+GROUP BY dep_id);
+                                                              QUERY PLAN
+---------------------------------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=3.62..6.14 rows=2 width=15) (actual time=25.337..25.361 rows=32 loops=1)
+   Hash Cond: ((empregados.dep_id = empregados_1.dep_id) AND (empregados.salario = (max(empregados_1.salario))))
+   ->  Seq Scan on empregados  (cost=0.00..2.00 rows=100 width=15) (actual time=10.682..10.688 rows=100 loops=1)
+   ->  Hash  (cost=3.14..3.14 rows=32 width=8) (actual time=14.622..14.623 rows=32 loops=1)
+         Buckets: 1024  Batches: 1  Memory Usage: 10kB
+         ->  HashAggregate  (cost=2.50..2.82 rows=32 width=8) (actual time=14.604..14.609 rows=32 loops=1)
+               Group Key: empregados_1.dep_id
+               Batches: 1  Memory Usage: 24kB
+               ->  Seq Scan on empregados empregados_1  (cost=0.00..2.00 rows=100 width=8) (actual time=0.008..0.017 rows=100 loops=1)
+ Planning Time: 95.294 ms
+ Execution Time: 25.542 ms
+(11 rows)
+
+Query 4:
+dojo=# EXPLAIN ANALYZE select d.nome
+from empregados e
+join departamentos d
+on e.dep_id=d.dep_id
+group by d.nome
+HAVING count(*)>3;
+                                                          QUERY PLAN
+------------------------------------------------------------------------------------------------------------------------------
+ HashAggregate  (cost=5.62..5.87 rows=7 width=14) (actual time=38.431..38.436 rows=12 loops=1)
+   Group Key: d.nome
+   Filter: (count(*) > 3)
+   Batches: 1  Memory Usage: 24kB
+   Rows Removed by Filter: 7
+   ->  Hash Join  (cost=1.74..5.12 rows=100 width=14) (actual time=38.357..38.386 rows=99 loops=1)
+         Hash Cond: (e.dep_id = d.dep_id)
+         ->  Seq Scan on empregados e  (cost=0.00..2.00 rows=100 width=4) (actual time=23.752..23.759 rows=100 loops=1)
+         ->  Hash  (cost=1.33..1.33 rows=33 width=18) (actual time=14.574..14.575 rows=33 loops=1)
+               Buckets: 1024  Batches: 1  Memory Usage: 10kB
+               ->  Seq Scan on departamentos d  (cost=0.00..1.33 rows=33 width=18) (actual time=0.193..0.201 rows=33 loops=1)
+ Planning Time: 115.590 ms
+ Execution Time: 38.574 ms
+(13 rows)
+
+Query 5:
+                                                          QUERY PLAN
+------------------------------------------------------------------------------------------------------------------------------
+ HashAggregate  (cost=5.62..5.82 rows=20 width=22) (actual time=38.433..38.437 rows=19 loops=1)
+   Group Key: d.nome
+   Batches: 1  Memory Usage: 24kB
+   ->  Hash Join  (cost=1.74..5.12 rows=100 width=18) (actual time=38.370..38.397 rows=99 loops=1)
+         Hash Cond: (e.dep_id = d.dep_id)
+         ->  Seq Scan on empregados e  (cost=0.00..2.00 rows=100 width=8) (actual time=23.789..23.796 rows=100 loops=1)
+         ->  Hash  (cost=1.33..1.33 rows=33 width=18) (actual time=14.553..14.554 rows=33 loops=1)
+               Buckets: 1024  Batches: 1  Memory Usage: 10kB
+               ->  Seq Scan on departamentos d  (cost=0.00..1.33 rows=33 width=18) (actual time=0.183..0.190 rows=33 loops=1)
+ Planning Time: 93.337 ms
+ Execution Time: 38.563 ms
+(11 rows)
+
+Query 6:
+                                                      QUERY PLAN
+-----------------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=3.25..6.88 rows=96 width=11) (actual time=36.414..36.460 rows=94 loops=1)
+   Hash Cond: (e1.supervisor_id = e2.emp_id)
+   Join Filter: (e1.dep_id <> e2.dep_id)
+   Rows Removed by Join Filter: 6
+   ->  Seq Scan on empregados e1  (cost=0.00..2.00 rows=100 width=15) (actual time=21.771..21.779 rows=100 loops=1)
+   ->  Hash  (cost=2.00..2.00 rows=100 width=8) (actual time=14.607..14.608 rows=100 loops=1)
+         Buckets: 1024  Batches: 1  Memory Usage: 12kB
+         ->  Seq Scan on empregados e2  (cost=0.00..2.00 rows=100 width=8) (actual time=0.014..0.028 rows=100 loops=1)
+ Planning Time: 195.329 ms
+ Execution Time: 36.591 ms
+(10 rows)
+
+Query 7:
+postgres=# \c dojo
+You are now connected to database "dojo" as user "postgres".
+dojo=# EXPLAIN ANALYZE SELECT d.dep_id, d.nome AS departamento, SUM(e.salario) AS "Salario total"
+FROM departamentos d
+LEFT OUTER JOIN empregados e ON d.dep_id = e.dep_id
+GROUP BY d.dep_id, d.nome;
+                                                           QUERY PLAN                                                           
+--------------------------------------------------------------------------------------------------------------------------------
+ HashAggregate  (cost=5.87..6.20 rows=33 width=26) (actual time=35.184..35.196 rows=33 loops=1)
+   Group Key: d.dep_id, d.nome
+   Batches: 1  Memory Usage: 24kB
+   ->  Hash Right Join  (cost=1.74..5.12 rows=100 width=22) (actual time=35.019..35.106 rows=101 loops=1)
+         Hash Cond: (e.dep_id = d.dep_id)
+         ->  Seq Scan on empregados e  (cost=0.00..2.00 rows=100 width=8) (actual time=0.141..0.155 rows=100 loops=1)
+         ->  Hash  (cost=1.33..1.33 rows=33 width=18) (actual time=34.841..34.842 rows=33 loops=1)
+               Buckets: 1024  Batches: 1  Memory Usage: 10kB
+               ->  Seq Scan on departamentos d  (cost=0.00..1.33 rows=33 width=18) (actual time=20.325..20.332 rows=33 loops=1)
+ Planning Time: 85.685 ms
+ Execution Time: 35.361 ms
+(11 rows)
+
+Query 8:
+dojo=# EXPLAIN ANALYZE select emp_id,nome, dep_id, salario
+from empregados e1
+where salario > (select avg(salario)
+from empregados e2
+where e1.dep_id = e2.dep_id);
+                                                      QUERY PLAN                                                       
+-----------------------------------------------------------------------------------------------------------------------
+ Seq Scan on empregados e1  (cost=0.00..229.50 rows=33 width=19) (actual time=10.900..11.852 rows=46 loops=1)
+   Filter: ((salario)::numeric > (SubPlan 1))
+   Rows Removed by Filter: 54
+   SubPlan 1
+     ->  Aggregate  (cost=2.26..2.27 rows=1 width=32) (actual time=0.009..0.010 rows=1 loops=100)
+           ->  Seq Scan on empregados e2  (cost=0.00..2.25 rows=3 width=4) (actual time=0.003..0.008 rows=4 loops=100)
+                 Filter: (e1.dep_id = dep_id)
+                 Rows Removed by Filter: 96
+ Planning Time: 61.946 ms
+ Execution Time: 11.968 ms
+(10 rows)
+
+Query 9:
+dojo=# EXPLAIN ANALYZE SELECT emp_id, nome, dep_id, salario, AVG(salario)
+OVER (PARTITION BY dep_id)
+FROM empregados;
+                                                     QUERY PLAN                                                      
+---------------------------------------------------------------------------------------------------------------------
+ WindowAgg  (cost=5.32..7.07 rows=100 width=51) (actual time=29.656..29.795 rows=100 loops=1)
+   ->  Sort  (cost=5.32..5.57 rows=100 width=19) (actual time=29.572..29.586 rows=100 loops=1)
+         Sort Key: dep_id
+         Sort Method: quicksort  Memory: 32kB
+         ->  Seq Scan on empregados  (cost=0.00..2.00 rows=100 width=19) (actual time=3.960..3.990 rows=100 loops=1)
+ Planning Time: 73.827 ms
+ Execution Time: 43.711 ms
+(7 rows)
+
+
+Query 10:
+dojo=# EXPLAIN ANALYZE SELECT e.nome, e.dep_id, e.salario, AVG(e.salario)
+OVER (PARTITION BY e.dep_id) AS media_salario_departamento
+FROM empregados e
+JOIN (SELECT dep_id, AVG(salario) AS media_salario
+FROM empregados GROUP BY dep_id) AS t
+ON e.dep_id = t.dep_id
+WHERE e.salario >= t.media_salario;
+                                                              QUERY PLAN                                                              
+--------------------------------------------------------------------------------------------------------------------------------------
+ WindowAgg  (cost=6.73..7.31 rows=33 width=47) (actual time=10.922..10.984 rows=47 loops=1)
+   ->  Sort  (cost=6.73..6.81 rows=33 width=15) (actual time=10.900..10.905 rows=47 loops=1)
+         Sort Key: e.dep_id
+         Sort Method: quicksort  Memory: 27kB
+         ->  Hash Join  (cost=3.62..5.90 rows=33 width=15) (actual time=4.207..4.253 rows=47 loops=1)
+               Hash Cond: (e.dep_id = empregados.dep_id)
+               Join Filter: ((e.salario)::numeric >= (avg(empregados.salario)))
+               Rows Removed by Join Filter: 53
+               ->  Seq Scan on empregados e  (cost=0.00..2.00 rows=100 width=15) (actual time=4.023..4.031 rows=100 loops=1)
+               ->  Hash  (cost=3.22..3.22 rows=32 width=36) (actual time=0.154..0.155 rows=32 loops=1)
+                     Buckets: 1024  Batches: 1  Memory Usage: 10kB
+                     ->  HashAggregate  (cost=2.50..2.90 rows=32 width=36) (actual time=0.127..0.144 rows=32 loops=1)
+                           Group Key: empregados.dep_id
+                           Batches: 1  Memory Usage: 24kB
+                           ->  Seq Scan on empregados  (cost=0.00..2.00 rows=100 width=8) (actual time=0.008..0.016 rows=100 loops=1)
+ Planning Time: 73.096 ms
+ Execution Time: 11.163 ms
+(17 rows)
+
