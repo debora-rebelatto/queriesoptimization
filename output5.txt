@@ -1,0 +1,75 @@
+                                                           QUERY PLAN                                                            
+---------------------------------------------------------------------------------------------------------------------------------
+ HashAggregate  (cost=5.62..5.95 rows=33 width=524) (actual time=28.485..28.491 rows=21 loops=1)
+   Group Key: d.nome
+   Batches: 1  Memory Usage: 24kB
+   ->  Hash Join  (cost=1.74..5.12 rows=100 width=520) (actual time=28.390..28.430 rows=98 loops=1)
+         Hash Cond: (e.dep_id = d.dep_id)
+         ->  Seq Scan on empregados e  (cost=0.00..2.00 rows=100 width=8) (actual time=6.939..6.949 rows=100 loops=1)
+         ->  Hash  (cost=1.33..1.33 rows=33 width=520) (actual time=21.430..21.430 rows=33 loops=1)
+               Buckets: 1024  Batches: 1  Memory Usage: 10kB
+               ->  Seq Scan on departamentos d  (cost=0.00..1.33 rows=33 width=520) (actual time=11.182..11.191 rows=33 loops=1)
+ Planning Time: 373.175 ms
+ Execution Time: 92.331 ms
+(11 rows)
+
+                                                          QUERY PLAN                                                           
+-------------------------------------------------------------------------------------------------------------------------------
+ HashAggregate  (cost=5.62..5.95 rows=33 width=524) (actual time=0.122..0.127 rows=21 loops=1)
+   Group Key: d.nome
+   Batches: 1  Memory Usage: 24kB
+   ->  Hash Join  (cost=1.74..5.12 rows=100 width=520) (actual time=0.050..0.087 rows=98 loops=1)
+         Hash Cond: (e.dep_id = d.dep_id)
+         ->  Seq Scan on empregados e  (cost=0.00..2.00 rows=100 width=8) (actual time=0.005..0.014 rows=100 loops=1)
+         ->  Hash  (cost=1.33..1.33 rows=33 width=520) (actual time=0.032..0.033 rows=33 loops=1)
+               Buckets: 1024  Batches: 1  Memory Usage: 10kB
+               ->  Seq Scan on departamentos d  (cost=0.00..1.33 rows=33 width=520) (actual time=0.006..0.011 rows=33 loops=1)
+ Planning Time: 0.576 ms
+ Execution Time: 0.248 ms
+(11 rows)
+
+                                                          QUERY PLAN                                                           
+-------------------------------------------------------------------------------------------------------------------------------
+ HashAggregate  (cost=5.62..5.95 rows=33 width=524) (actual time=0.143..0.149 rows=21 loops=1)
+   Group Key: d.nome
+   Batches: 1  Memory Usage: 24kB
+   ->  Hash Join  (cost=1.74..5.12 rows=100 width=520) (actual time=0.056..0.101 rows=98 loops=1)
+         Hash Cond: (e.dep_id = d.dep_id)
+         ->  Seq Scan on empregados e  (cost=0.00..2.00 rows=100 width=8) (actual time=0.007..0.016 rows=100 loops=1)
+         ->  Hash  (cost=1.33..1.33 rows=33 width=520) (actual time=0.036..0.036 rows=33 loops=1)
+               Buckets: 1024  Batches: 1  Memory Usage: 10kB
+               ->  Seq Scan on departamentos d  (cost=0.00..1.33 rows=33 width=520) (actual time=0.007..0.013 rows=33 loops=1)
+ Planning Time: 0.611 ms
+ Execution Time: 0.282 ms
+(11 rows)
+
+                                                          QUERY PLAN                                                           
+-------------------------------------------------------------------------------------------------------------------------------
+ HashAggregate  (cost=5.62..5.95 rows=33 width=524) (actual time=0.080..0.084 rows=21 loops=1)
+   Group Key: d.nome
+   Batches: 1  Memory Usage: 24kB
+   ->  Hash Join  (cost=1.74..5.12 rows=100 width=520) (actual time=0.036..0.058 rows=98 loops=1)
+         Hash Cond: (e.dep_id = d.dep_id)
+         ->  Seq Scan on empregados e  (cost=0.00..2.00 rows=100 width=8) (actual time=0.004..0.009 rows=100 loops=1)
+         ->  Hash  (cost=1.33..1.33 rows=33 width=520) (actual time=0.023..0.023 rows=33 loops=1)
+               Buckets: 1024  Batches: 1  Memory Usage: 10kB
+               ->  Seq Scan on departamentos d  (cost=0.00..1.33 rows=33 width=520) (actual time=0.004..0.007 rows=33 loops=1)
+ Planning Time: 0.384 ms
+ Execution Time: 0.174 ms
+(11 rows)
+
+                                                          QUERY PLAN                                                           
+-------------------------------------------------------------------------------------------------------------------------------
+ HashAggregate  (cost=5.62..5.95 rows=33 width=524) (actual time=0.146..0.153 rows=21 loops=1)
+   Group Key: d.nome
+   Batches: 1  Memory Usage: 24kB
+   ->  Hash Join  (cost=1.74..5.12 rows=100 width=520) (actual time=0.046..0.102 rows=98 loops=1)
+         Hash Cond: (e.dep_id = d.dep_id)
+         ->  Seq Scan on empregados e  (cost=0.00..2.00 rows=100 width=8) (actual time=0.005..0.016 rows=100 loops=1)
+         ->  Hash  (cost=1.33..1.33 rows=33 width=520) (actual time=0.032..0.032 rows=33 loops=1)
+               Buckets: 1024  Batches: 1  Memory Usage: 10kB
+               ->  Seq Scan on departamentos d  (cost=0.00..1.33 rows=33 width=520) (actual time=0.005..0.012 rows=33 loops=1)
+ Planning Time: 0.494 ms
+ Execution Time: 0.254 ms
+(11 rows)
+

@@ -13,7 +13,6 @@ WHERE e2.salario < e.salario;
 
 -- 2- Listar o maior salario de cada departamento (usa o group by )
 EXPLAIN ANALYZE
-
 SELECT d.dep_id as x, max(salario) as y
 FROM departamentos d JOIN empregados e
 ON e.dep_id = d.dep_id
