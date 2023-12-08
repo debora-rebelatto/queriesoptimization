@@ -76,11 +76,6 @@ Os cálculos para média e desvio não serão demonstrados, porém eles podem se
 
 Encontre os empregados com salario maior ou igual a média do seu departamento. Deve ser reportado o salario do empregado e a média do departamento (dica: usar window function com subconsulta)
 
-
-```sql
-
-```
-
 ```sql
                                                                      QUERY PLAN
 ----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -210,9 +205,6 @@ where e1.dep_id = e2.dep_id);
 | 6        | 0.095              | 1.873               |
 | Média    | 44.203             | 4.3028              |
 | Desvio   | 85.155             | 32.442              |
-
-Aqui está uma tabela explicando cada linha do plano de execução fornecido:
-Claro, aqui está uma explicação mais direta do plano de execução:
 
 | Linha | Descrição                                                                                                                                         |
 | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
