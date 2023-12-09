@@ -61,20 +61,6 @@ Irei levar em conta apenas o tempo de execução para a análise de otimização
 
 O resultado para a saída do comando de `EXPLAIN ANALYZE` pode ser encontrado na pasta `resultados` deste repositório.
 
-Os cálculos para média e desvio não serão demonstrados, porém eles podem ser encontrados ao final de todas as tabelas de valores e foram obtidos a partir das seguintes fórmulas:
-
-- Média: soma de todos os tempos dividido pelo número de execuções
-
-  $$
-  \frac{\sum_{i=1}^{n}x_i}{n}
-  $$
-
-- Desvio: raiz quadrada da soma de todos os tempos de menos a média elevado ao quadrado dividido pelo número de execuções
-
-  $$
-  \sqrt{\frac{\sum_{i=1}^{n}(x_i-\bar{x})^2}{n}}
-  $$
-
 # Query 7
 
 **Descrição:**
@@ -97,14 +83,21 @@ GROUP BY d.dep_id, d.nome;
 
 |                            | **Média** | **Desvio Padrão** |
 | -------------------------- | --------- | ----------------- |
-| Tempo de Planejamento (ms) | 116.458   | 232.984           |
-| Tempo de Execução (ms)     | 63.392    | 86.462            |
+| Tempo de Execução (ms)     | 63.392    | 52.72             |
+| Tempo de Planejamento (ms) | 116.458   | 226.01            |
 
 **Otimizando a Query**:
 
 ```sql
 CREATE INDEX idx_empregados_dep_id ON empregados (dep_id);
 CREATE INDEX idx_departamentos_dep_id ON departamentos (dep_id);
+```
+
+```sql
+EXPLAIN ANALYZE SELECT d.dep_id, d.nome AS departamento, SUM(e.salario) AS "Salariototal"
+FROM departamentos d
+INNER JOIN empregados e ON d.dep_id = e.dep_id
+GROUP BY d.dep_id, d.nome;
 ```
 
 | **Query** | **Tempo de Planejamento (ms)** | **Tempo de Execução (ms)** |
@@ -117,8 +110,8 @@ CREATE INDEX idx_departamentos_dep_id ON departamentos (dep_id);
 
 |                            | **Média** | **Desvio Padrão** |
 | -------------------------- | --------- | ----------------- |
+| Tempo de Execução (ms)     | 34.57     | 52.72             |
 | Tempo de Planejamento (ms) | 113.647   | 226.996           |
-| Tempo de Execução (ms)     | 34.180    | 60.598            |
 
 # Query 2
 
@@ -219,25 +212,6 @@ JOIN (
     GROUP BY dep_id
 ) s ON e1.dep_id = s.dep_id
 WHERE e1.salario > s.salario_medio;
-```
-
-```sql
-                                                           QUERY PLAN
---------------------------------------------------------------------------------------------------------------------------------
- Hash Join  (cost=435.15..824.91 rows=6667 width=19) (actual time=28.547..34.940 rows=9958 loops=1)
-   Hash Cond: (e1.dep_id = empregados.dep_id)
-   Join Filter: ((e1.salario)::numeric > (avg(empregados.salario)))
-   Rows Removed by Join Filter: 10042
-   ->  Seq Scan on empregados e1  (cost=0.00..334.00 rows=20000 width=19) (actual time=15.589..16.586 rows=20000 loops=1)
-   ->  Hash  (cost=434.74..434.74 rows=33 width=36) (actual time=12.931..12.932 rows=33 loops=1)
-         Buckets: 1024  Batches: 1  Memory Usage: 10kB
-         ->  HashAggregate  (cost=434.00..434.41 rows=33 width=36) (actual time=12.907..12.920 rows=33 loops=1)
-               Group Key: empregados.dep_id
-               Batches: 1  Memory Usage: 24kB
-               ->  Seq Scan on empregados  (cost=0.00..334.00 rows=20000 width=8) (actual time=0.007..5.307 rows=20000 loops=1)
- Planning Time: 212.886 ms
- Execution Time: 43.724 ms
-(13 rows)
 ```
 
 | **Query** | **Tempo de Planejamento (ms)** | **Tempo de Execução (ms)** |
