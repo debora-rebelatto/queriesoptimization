@@ -1,7 +1,7 @@
-# Trabalho prático A3 - Otimização de consultas (05/12 - duplas)
+# Trabalho prático A3 - Otimização de consultas (12/12 - duplas)
 
-[Relatório](./relatorio.md)
-
+[Relatório](./relatorio.md)  
+[Slides](https://docs.google.com/presentation/d/1zYjtIAwu6yABrc7HQ3rdNCX9R-NkagXQzlvCk8eg4hs/edit?usp=sharing)  
 [Link Docs Descrição da tarefa](https://docs.google.com/document/d/18HfXRSnD8DmN3SrCVPxFZPG-TSMB1Aw97SYm6ffIHcs/edit)
 
 ## Descrição
