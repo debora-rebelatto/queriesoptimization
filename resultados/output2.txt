@@ -13,7 +13,7 @@
  Execution Time: 274.008 ms
 (11 rows)
 
-                                                         QUERY PLAN                                                          
+                                                         QUERY PLAN
 -----------------------------------------------------------------------------------------------------------------------------
  HashAggregate  (cost=710.74..711.07 rows=33 width=8) (actual time=6.967..6.971 rows=32 loops=1)
    Group Key: d.dep_id

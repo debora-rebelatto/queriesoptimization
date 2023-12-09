@@ -112,6 +112,13 @@ where e1.dep_id = e2.dep_id);
 " >> output8.txt
 done
 
+psql -d dojo -c "select emp_id,nome, dep_id, salario
+from empregados e1
+where salario > (select avg(salario)
+from empregados e2
+where e1.dep_id = e2.dep_id);
+" >> output8-noexplain.txt
+
 sudo service postgresql stop
 sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
 sudo service postgresql start
@@ -146,14 +153,28 @@ sudo service postgresql start
 
 for i in {1..5}
 do
-    psql -d dojo -c "EXPLAIN ANALYZE SELECT d.dep_id, d.nome AS departamento, SUM(e.salario) AS "Salariototal"
-FROM departamentos d
-LEFT OUTER JOIN empregados e ON d.dep_id = e.dep_id
-WHERE e.salario > 10000
-GROUP BY d.dep_id, d.nome;
+    psql -d dojo -c "EXPLAIN ANALYSE SELECT e1.emp_id, e1.nome, e1.dep_id, e1.salario
+FROM empregados e1
+JOIN (
+    SELECT dep_id, AVG(salario) AS salario_medio
+    FROM empregados
+    GROUP BY dep_id
+) s ON e1.dep_id = s.dep_id
+WHERE e1.salario > s.salario_medio;
 
-" >> optimized-output7-2.txt
+" >> optimized-output8-1.txt
 done
+
+    psql -d dojo -c "SELECT e1.emp_id, e1.nome, e1.dep_id, e1.salario
+FROM empregados e1
+JOIN (
+    SELECT dep_id, AVG(salario) AS salario_medio
+    FROM empregados
+    GROUP BY dep_id
+) s ON e1.dep_id = s.dep_id
+WHERE e1.salario > s.salario_medio;
+
+" >> optimized-output8-1-NOEXPLAIN.txt
 
 
 sudo service postgresql stop

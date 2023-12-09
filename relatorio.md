@@ -162,3 +162,52 @@ where e1.dep_id = e2.dep_id);
 | -------------------------- | --------- | ----------------- |
 | Tempo de Planejamento (ms) | 51.975    | 102.935           |
 | Tempo de Execução (ms)     | 26.495    | 36.598            |
+
+**Otimizando a Query**:
+
+```sql
+EXPLAIN ANALYSE SELECT e1.emp_id, e1.nome, e1.dep_id, e1.salario
+FROM empregados e1
+JOIN (
+    SELECT dep_id, AVG(salario) AS salario_medio
+    FROM empregados
+    GROUP BY dep_id
+) s ON e1.dep_id = s.dep_id
+WHERE e1.salario > s.salario_medio;
+```
+
+```sql
+                                                           QUERY PLAN
+--------------------------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=435.15..824.91 rows=6667 width=19) (actual time=28.547..34.940 rows=9958 loops=1)
+   Hash Cond: (e1.dep_id = empregados.dep_id)
+   Join Filter: ((e1.salario)::numeric > (avg(empregados.salario)))
+   Rows Removed by Join Filter: 10042
+   ->  Seq Scan on empregados e1  (cost=0.00..334.00 rows=20000 width=19) (actual time=15.589..16.586 rows=20000 loops=1)
+   ->  Hash  (cost=434.74..434.74 rows=33 width=36) (actual time=12.931..12.932 rows=33 loops=1)
+         Buckets: 1024  Batches: 1  Memory Usage: 10kB
+         ->  HashAggregate  (cost=434.00..434.41 rows=33 width=36) (actual time=12.907..12.920 rows=33 loops=1)
+               Group Key: empregados.dep_id
+               Batches: 1  Memory Usage: 24kB
+               ->  Seq Scan on empregados  (cost=0.00..334.00 rows=20000 width=8) (actual time=0.007..5.307 rows=20000 loops=1)
+ Planning Time: 212.886 ms
+ Execution Time: 43.724 ms
+(13 rows)
+```
+
+| **Query** | **Tempo de Planejamento (ms)** | **Tempo de Execução (ms)** |
+| --------- | ------------------------------ | -------------------------- |
+| 1         | 212.886                        | 43.724                     |
+| 2         | 0.415                          | 11.368                     |
+| 3         | 0.404                          | 11.286                     |
+| 4         | 0.404                          | 11.286                     |
+| 5         | 0.435                          | 11.518                     |
+| 6         | 0.435                          | 11.518                     |
+| 7         | 0.403                          | 11.195                     |
+
+|                            | **Média** | **Desvio Padrão** |
+| -------------------------- | --------- | ----------------- |
+| Tempo de Planejamento (ms) | 35.575    | 76.084            |
+| Tempo de Execução (ms)     | 13.974    | 14.598            |
+
+A partir dos valores de média entre os tempos de Execução, percebemos que as alterações feitas permitiram uma redução de 52.74% no tempo, uma diferença de 12,52ms entre as execuções.
