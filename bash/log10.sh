@@ -29,6 +29,23 @@ GROUP BY d.dep_id;
 " >> output2.txt
 done
 
+sudo service postgresql stop
+sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
+sudo service postgresql start
+
+for i in {1..5}
+do
+    psql -d dojo -c "EXPLAIN ANALYZE
+WITH MaxSalaries AS (
+    SELECT dep_id, MAX(salario) AS max_salario
+    FROM empregados
+    GROUP BY dep_id
+)
+SELECT d.dep_id AS x, ms.max_salario AS y
+FROM departamentos d
+JOIN MaxSalaries ms ON d.dep_id = ms.dep_id;
+" >> output2-optimized.txt
+done
 
 sudo service postgresql stop
 sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
@@ -97,6 +114,22 @@ LEFT OUTER JOIN empregados e ON d.dep_id = e.dep_id
 GROUP BY d.dep_id, d.nome;
 " >> output7.txt
 done
+
+
+sudo service postgresql stop
+sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
+sudo service postgresql start
+
+for i in {1..5}
+do
+    psql -d dojo -c "EXPLAIN ANALYZE SELECT d.dep_id, d.nome AS departamento, SUM(e.salario) AS "Salariototal"
+FROM departamentos d
+INNER JOIN empregados e ON d.dep_id = e.dep_id
+GROUP BY d.dep_id, d.nome;
+" >> output7-OPTIMIZED2.txt
+done
+
+
 
 sudo service postgresql stop
 sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"

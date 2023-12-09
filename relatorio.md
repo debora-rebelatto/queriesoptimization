@@ -102,6 +102,24 @@ GROUP BY d.dep_id, d.nome;
 
 **Otimizando a Query**:
 
+```sql
+CREATE INDEX idx_empregados_dep_id ON empregados (dep_id);
+CREATE INDEX idx_departamentos_dep_id ON departamentos (dep_id);
+```
+
+| **Query** | **Tempo de Planejamento (ms)** | **Tempo de Execução (ms)** |
+| --------- | ------------------------------ | -------------------------- |
+| 1         | 565.606                        | 138.633                    |
+| 2         | 0.400                          | 8.333                      |
+| 3         | 0.415                          | 8.326                      |
+| 4         | 0.398                          | 8.301                      |
+| 5         | 0.418                          | 8.306                      |
+
+|                            | **Média** | **Desvio Padrão** |
+| -------------------------- | --------- | ----------------- |
+| Tempo de Planejamento (ms) | 113.647   | 226.996           |
+| Tempo de Execução (ms)     | 34.180    | 60.598            |
+
 # Query 2
 
 **Descrição:**
@@ -136,6 +154,33 @@ Crie um index:
 ```sql
 CREATE INDEX dep_id_index ON departamentos (dep_id);
 ```
+
+```sql
+EXPLAIN ANALYZE
+WITH MaxSalaries AS (,,
+    SELECT dep_id, MAX(salario) AS max_salario
+    FROM empregados
+    GROUP BY dep_id
+)
+SELECT d.dep_id AS x, ms.max_salario AS y
+FROM departamentos d
+JOIN MaxSalaries ms ON d.dep_id = ms.dep_id;
+```
+
+| #   | Planning Time (ms) | Execution Time (ms) |
+| --- | ------------------ | ------------------- |
+| 1   | 246.203            | 114.485             |
+| 2   | 0.444              | 8.211               |
+| 3   | 0.537              | 5.338               |
+| 4   | 0.546              | 6.569               |
+| 5   | 0.546              | 5.152               |
+
+|                            | **Média** | **Desvio Padrão** |
+| -------------------------- | --------- | ----------------- |
+| Tempo de Planejamento (ms) | 49.655    | 98.978            |
+| Tempo de Execução (ms)     | 27.151    | 41.690            |
+
+Apesar de não ter ocorrido uma grande redução nas execuções 2-5, percebemos que a primeira execução já demonstra uma queda significativa. Isso ocorre pois o index é criado apenas uma vez, e depois é utilizado para todas as execuções, enquanto que o tempo de planejamento é calculado para cada execução.
 
 # Query 8
 
