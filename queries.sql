@@ -6,7 +6,7 @@
 
 -- 1- Listar os empregados (nomes) que tem salário maior que seu chefe (usar o join)
 EXPLAIN ANALYZE
-SELECT e.nome as "empregado", e2.nome as "chefe" , e.salario as "emp sal" , e2.salario as "chef sal"
+SELECT e.nome as "empregado", e2.nome as "chefe" , e.salario as "empsal" , e2.salario as "chefsal"
 FROM empregados e
 JOIN empregados e2 ON e.supervisor_id = e2.emp_id
 WHERE e2.salario < e.salario;

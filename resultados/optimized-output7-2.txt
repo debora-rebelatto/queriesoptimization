@@ -1,0 +1,90 @@
+                                                                     QUERY PLAN                                                                     
+----------------------------------------------------------------------------------------------------------------------------------------------------
+ GroupAggregate  (cost=9.79..9.81 rows=1 width=27) (actual time=21.127..21.135 rows=0 loops=1)
+   Group Key: d.dep_id, d.nome
+   ->  Sort  (cost=9.79..9.80 rows=1 width=23) (actual time=21.123..21.130 rows=0 loops=1)
+         Sort Key: d.dep_id, d.nome
+         Sort Method: quicksort  Memory: 25kB
+         ->  Hash Join  (cost=8.32..9.78 rows=1 width=23) (actual time=11.234..11.240 rows=0 loops=1)
+               Hash Cond: (d.dep_id = e.dep_id)
+               ->  Seq Scan on departamentos d  (cost=0.00..1.33 rows=33 width=19) (actual time=0.023..0.024 rows=1 loops=1)
+               ->  Hash  (cost=8.30..8.30 rows=1 width=8) (actual time=11.171..11.174 rows=0 loops=1)
+                     Buckets: 1024  Batches: 1  Memory Usage: 8kB
+                     ->  Index Scan using idx_salario on empregados e  (cost=0.29..8.30 rows=1 width=8) (actual time=11.169..11.169 rows=0 loops=1)
+                           Index Cond: (salario > 10000)
+ Planning Time: 293.737 ms
+ Execution Time: 38.905 ms
+(14 rows)
+
+                                                                    QUERY PLAN                                                                    
+--------------------------------------------------------------------------------------------------------------------------------------------------
+ GroupAggregate  (cost=9.79..9.81 rows=1 width=27) (actual time=0.058..0.059 rows=0 loops=1)
+   Group Key: d.dep_id, d.nome
+   ->  Sort  (cost=9.79..9.80 rows=1 width=23) (actual time=0.057..0.058 rows=0 loops=1)
+         Sort Key: d.dep_id, d.nome
+         Sort Method: quicksort  Memory: 25kB
+         ->  Hash Join  (cost=8.32..9.78 rows=1 width=23) (actual time=0.022..0.022 rows=0 loops=1)
+               Hash Cond: (d.dep_id = e.dep_id)
+               ->  Seq Scan on departamentos d  (cost=0.00..1.33 rows=33 width=19) (actual time=0.003..0.003 rows=1 loops=1)
+               ->  Hash  (cost=8.30..8.30 rows=1 width=8) (actual time=0.008..0.008 rows=0 loops=1)
+                     Buckets: 1024  Batches: 1  Memory Usage: 8kB
+                     ->  Index Scan using idx_salario on empregados e  (cost=0.29..8.30 rows=1 width=8) (actual time=0.007..0.007 rows=0 loops=1)
+                           Index Cond: (salario > 10000)
+ Planning Time: 0.447 ms
+ Execution Time: 0.145 ms
+(14 rows)
+
+                                                                    QUERY PLAN                                                                    
+--------------------------------------------------------------------------------------------------------------------------------------------------
+ GroupAggregate  (cost=9.79..9.81 rows=1 width=27) (actual time=0.101..0.102 rows=0 loops=1)
+   Group Key: d.dep_id, d.nome
+   ->  Sort  (cost=9.79..9.80 rows=1 width=23) (actual time=0.100..0.101 rows=0 loops=1)
+         Sort Key: d.dep_id, d.nome
+         Sort Method: quicksort  Memory: 25kB
+         ->  Hash Join  (cost=8.32..9.78 rows=1 width=23) (actual time=0.038..0.039 rows=0 loops=1)
+               Hash Cond: (d.dep_id = e.dep_id)
+               ->  Seq Scan on departamentos d  (cost=0.00..1.33 rows=33 width=19) (actual time=0.008..0.008 rows=1 loops=1)
+               ->  Hash  (cost=8.30..8.30 rows=1 width=8) (actual time=0.015..0.016 rows=0 loops=1)
+                     Buckets: 1024  Batches: 1  Memory Usage: 8kB
+                     ->  Index Scan using idx_salario on empregados e  (cost=0.29..8.30 rows=1 width=8) (actual time=0.015..0.015 rows=0 loops=1)
+                           Index Cond: (salario > 10000)
+ Planning Time: 1.448 ms
+ Execution Time: 0.253 ms
+(14 rows)
+
+                                                                    QUERY PLAN                                                                    
+--------------------------------------------------------------------------------------------------------------------------------------------------
+ GroupAggregate  (cost=9.79..9.81 rows=1 width=27) (actual time=0.069..0.070 rows=0 loops=1)
+   Group Key: d.dep_id, d.nome
+   ->  Sort  (cost=9.79..9.80 rows=1 width=23) (actual time=0.068..0.069 rows=0 loops=1)
+         Sort Key: d.dep_id, d.nome
+         Sort Method: quicksort  Memory: 25kB
+         ->  Hash Join  (cost=8.32..9.78 rows=1 width=23) (actual time=0.025..0.026 rows=0 loops=1)
+               Hash Cond: (d.dep_id = e.dep_id)
+               ->  Seq Scan on departamentos d  (cost=0.00..1.33 rows=33 width=19) (actual time=0.004..0.004 rows=1 loops=1)
+               ->  Hash  (cost=8.30..8.30 rows=1 width=8) (actual time=0.011..0.011 rows=0 loops=1)
+                     Buckets: 1024  Batches: 1  Memory Usage: 8kB
+                     ->  Index Scan using idx_salario on empregados e  (cost=0.29..8.30 rows=1 width=8) (actual time=0.011..0.011 rows=0 loops=1)
+                           Index Cond: (salario > 10000)
+ Planning Time: 0.498 ms
+ Execution Time: 0.195 ms
+(14 rows)
+
+                                                                    QUERY PLAN                                                                    
+--------------------------------------------------------------------------------------------------------------------------------------------------
+ GroupAggregate  (cost=9.79..9.81 rows=1 width=27) (actual time=0.057..0.058 rows=0 loops=1)
+   Group Key: d.dep_id, d.nome
+   ->  Sort  (cost=9.79..9.80 rows=1 width=23) (actual time=0.057..0.057 rows=0 loops=1)
+         Sort Key: d.dep_id, d.nome
+         Sort Method: quicksort  Memory: 25kB
+         ->  Hash Join  (cost=8.32..9.78 rows=1 width=23) (actual time=0.022..0.023 rows=0 loops=1)
+               Hash Cond: (d.dep_id = e.dep_id)
+               ->  Seq Scan on departamentos d  (cost=0.00..1.33 rows=33 width=19) (actual time=0.003..0.003 rows=1 loops=1)
+               ->  Hash  (cost=8.30..8.30 rows=1 width=8) (actual time=0.008..0.008 rows=0 loops=1)
+                     Buckets: 1024  Batches: 1  Memory Usage: 8kB
+                     ->  Index Scan using idx_salario on empregados e  (cost=0.29..8.30 rows=1 width=8) (actual time=0.008..0.008 rows=0 loops=1)
+                           Index Cond: (salario > 10000)
+ Planning Time: 0.459 ms
+ Execution Time: 0.152 ms
+(14 rows)
+

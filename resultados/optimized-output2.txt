@@ -1,0 +1,90 @@
+                                                                   QUERY PLAN
+------------------------------------------------------------------------------------------------------------------------------------------------
+ HashAggregate  (cost=383.70..383.73 rows=3 width=8) (actual time=142.888..142.892 rows=3 loops=1)
+   Group Key: d.dep_id
+   Batches: 1  Memory Usage: 24kB
+   ->  Nested Loop  (cost=8.98..374.61 rows=1818 width=8) (actual time=50.846..111.356 rows=1688 loops=1)
+         ->  Seq Scan on departamentos d  (cost=0.00..1.45 rows=3 width=4) (actual time=0.015..0.033 rows=3 loops=1)
+               Filter: (dep_id = ANY ('{1,2,3}'::integer[]))
+               Rows Removed by Filter: 30
+         ->  Bitmap Heap Scan on empregados e  (cost=8.98..118.33 rows=606 width=8) (actual time=17.061..36.867 rows=563 loops=3)
+               Recheck Cond: (dep_id = d.dep_id)
+               Heap Blocks: exact=395
+               ->  Bitmap Index Scan on idx_empregados_dep_id  (cost=0.00..8.83 rows=606 width=0) (actual time=10.845..10.845 rows=563 loops=3)
+                     Index Cond: (dep_id = d.dep_id)
+ Planning Time: 347.911 ms
+ Execution Time: 165.112 ms
+(14 rows)
+
+                                                                  QUERY PLAN
+----------------------------------------------------------------------------------------------------------------------------------------------
+ HashAggregate  (cost=383.70..383.73 rows=3 width=8) (actual time=1.019..1.020 rows=3 loops=1)
+   Group Key: d.dep_id
+   Batches: 1  Memory Usage: 24kB
+   ->  Nested Loop  (cost=8.98..374.61 rows=1818 width=8) (actual time=0.054..0.807 rows=1688 loops=1)
+         ->  Seq Scan on departamentos d  (cost=0.00..1.45 rows=3 width=4) (actual time=0.004..0.008 rows=3 loops=1)
+               Filter: (dep_id = ANY ('{1,2,3}'::integer[]))
+               Rows Removed by Filter: 30
+         ->  Bitmap Heap Scan on empregados e  (cost=8.98..118.33 rows=606 width=8) (actual time=0.035..0.207 rows=563 loops=3)
+               Recheck Cond: (dep_id = d.dep_id)
+               Heap Blocks: exact=395
+               ->  Bitmap Index Scan on idx_empregados_dep_id  (cost=0.00..8.83 rows=606 width=0) (actual time=0.020..0.020 rows=563 loops=3)
+                     Index Cond: (dep_id = d.dep_id)
+ Planning Time: 0.441 ms
+ Execution Time: 1.105 ms
+(14 rows)
+
+                                                                  QUERY PLAN                                                                  
+----------------------------------------------------------------------------------------------------------------------------------------------
+ HashAggregate  (cost=383.70..383.73 rows=3 width=8) (actual time=0.969..0.970 rows=3 loops=1)
+   Group Key: d.dep_id
+   Batches: 1  Memory Usage: 24kB
+   ->  Nested Loop  (cost=8.98..374.61 rows=1818 width=8) (actual time=0.055..0.773 rows=1688 loops=1)
+         ->  Seq Scan on departamentos d  (cost=0.00..1.45 rows=3 width=4) (actual time=0.004..0.007 rows=3 loops=1)
+               Filter: (dep_id = ANY ('{1,2,3}'::integer[]))
+               Rows Removed by Filter: 30
+         ->  Bitmap Heap Scan on empregados e  (cost=8.98..118.33 rows=606 width=8) (actual time=0.034..0.197 rows=563 loops=3)
+               Recheck Cond: (dep_id = d.dep_id)
+               Heap Blocks: exact=395
+               ->  Bitmap Index Scan on idx_empregados_dep_id  (cost=0.00..8.83 rows=606 width=0) (actual time=0.020..0.020 rows=563 loops=3)
+                     Index Cond: (dep_id = d.dep_id)
+ Planning Time: 0.443 ms
+ Execution Time: 1.056 ms
+(14 rows)
+
+                                                                  QUERY PLAN                                                                  
+----------------------------------------------------------------------------------------------------------------------------------------------
+ HashAggregate  (cost=383.70..383.73 rows=3 width=8) (actual time=0.952..0.953 rows=3 loops=1)
+   Group Key: d.dep_id
+   Batches: 1  Memory Usage: 24kB
+   ->  Nested Loop  (cost=8.98..374.61 rows=1818 width=8) (actual time=0.055..0.756 rows=1688 loops=1)
+         ->  Seq Scan on departamentos d  (cost=0.00..1.45 rows=3 width=4) (actual time=0.005..0.008 rows=3 loops=1)
+               Filter: (dep_id = ANY ('{1,2,3}'::integer[]))
+               Rows Removed by Filter: 30
+         ->  Bitmap Heap Scan on empregados e  (cost=8.98..118.33 rows=606 width=8) (actual time=0.034..0.195 rows=563 loops=3)
+               Recheck Cond: (dep_id = d.dep_id)
+               Heap Blocks: exact=395
+               ->  Bitmap Index Scan on idx_empregados_dep_id  (cost=0.00..8.83 rows=606 width=0) (actual time=0.020..0.020 rows=563 loops=3)
+                     Index Cond: (dep_id = d.dep_id)
+ Planning Time: 0.592 ms
+ Execution Time: 1.043 ms
+(14 rows)
+
+                                                                  QUERY PLAN
+----------------------------------------------------------------------------------------------------------------------------------------------
+ HashAggregate  (cost=383.70..383.73 rows=3 width=8) (actual time=0.968..0.970 rows=3 loops=1)
+   Group Key: d.dep_id
+   Batches: 1  Memory Usage: 24kB
+   ->  Nested Loop  (cost=8.98..374.61 rows=1818 width=8) (actual time=0.054..0.773 rows=1688 loops=1)
+         ->  Seq Scan on departamentos d  (cost=0.00..1.45 rows=3 width=4) (actual time=0.004..0.007 rows=3 loops=1)
+               Filter: (dep_id = ANY ('{1,2,3}'::integer[]))
+               Rows Removed by Filter: 30
+         ->  Bitmap Heap Scan on empregados e  (cost=8.98..118.33 rows=606 width=8) (actual time=0.034..0.197 rows=563 loops=3)
+               Recheck Cond: (dep_id = d.dep_id)
+               Heap Blocks: exact=395
+               ->  Bitmap Index Scan on idx_empregados_dep_id  (cost=0.00..8.83 rows=606 width=0) (actual time=0.020..0.020 rows=563 loops=3)
+                     Index Cond: (dep_id = d.dep_id)
+ Planning Time: 0.443 ms
+ Execution Time: 1.056 ms
+(14 rows)
+

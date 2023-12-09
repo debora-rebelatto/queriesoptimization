@@ -1,0 +1,100 @@
+                                                               QUERY PLAN
+-----------------------------------------------------------------------------------------------------------------------------------------
+ Seq Scan on empregados e1  (cost=0.00..3042164.00 rows=6667 width=19) (actual time=1365.706..4856.975 rows=9958 loops=1)
+   Filter: ((salario)::numeric > (SubPlan 1))
+   Rows Removed by Filter: 10042
+   SubPlan 1
+     ->  Aggregate  (cost=152.08..152.09 rows=1 width=32) (actual time=0.177..0.177 rows=1 loops=20000)
+           ->  Bitmap Heap Scan on empregados e2  (cost=8.98..150.56 rows=606 width=4) (actual time=0.027..0.142 rows=607 loops=20000)
+                 Recheck Cond: (e1.dep_id = dep_id)
+                 Heap Blocks: exact=2646921
+                 ->  Bitmap Index Scan on idx_dep_id  (cost=0.00..8.83 rows=606 width=0) (actual time=0.016..0.016 rows=607 loops=20000)
+                       Index Cond: (dep_id = e1.dep_id)
+ Planning Time: 284.178 ms
+ JIT:
+   Functions: 12
+   Options: Inlining true, Optimization true, Expressions true, Deforming true
+   Timing: Generation 9.507 ms, Inlining 412.381 ms, Optimization 410.472 ms, Emission 465.969 ms, Total 1298.330 ms
+ Execution Time: 7601.813 ms
+(16 rows)
+
+                                                               QUERY PLAN
+-----------------------------------------------------------------------------------------------------------------------------------------
+ Seq Scan on empregados e1  (cost=0.00..3042164.00 rows=6667 width=19) (actual time=175.296..3549.993 rows=9958 loops=1)
+   Filter: ((salario)::numeric > (SubPlan 1))
+   Rows Removed by Filter: 10042
+   SubPlan 1
+     ->  Aggregate  (cost=152.08..152.09 rows=1 width=32) (actual time=0.168..0.168 rows=1 loops=20000)
+           ->  Bitmap Heap Scan on empregados e2  (cost=8.98..150.56 rows=606 width=4) (actual time=0.025..0.134 rows=607 loops=20000)
+                 Recheck Cond: (e1.dep_id = dep_id)
+                 Heap Blocks: exact=2646921
+                 ->  Bitmap Index Scan on idx_dep_id  (cost=0.00..8.83 rows=606 width=0) (actual time=0.015..0.015 rows=607 loops=20000)
+                       Index Cond: (dep_id = e1.dep_id)
+ Planning Time: 0.316 ms
+ JIT:
+   Functions: 12
+   Options: Inlining true, Optimization true, Expressions true, Deforming true
+   Timing: Generation 0.561 ms, Inlining 66.795 ms, Optimization 65.123 ms, Emission 42.637 ms, Total 175.116 ms
+ Execution Time: 3567.180 ms
+(16 rows)
+
+                                                               QUERY PLAN                                                                
+-----------------------------------------------------------------------------------------------------------------------------------------
+ Seq Scan on empregados e1  (cost=0.00..3042164.00 rows=6667 width=19) (actual time=159.638..3567.376 rows=9958 loops=1)
+   Filter: ((salario)::numeric > (SubPlan 1))
+   Rows Removed by Filter: 10042
+   SubPlan 1
+     ->  Aggregate  (cost=152.08..152.09 rows=1 width=32) (actual time=0.170..0.170 rows=1 loops=20000)
+           ->  Bitmap Heap Scan on empregados e2  (cost=8.98..150.56 rows=606 width=4) (actual time=0.026..0.135 rows=607 loops=20000)
+                 Recheck Cond: (e1.dep_id = dep_id)
+                 Heap Blocks: exact=2646921
+                 ->  Bitmap Index Scan on idx_dep_id  (cost=0.00..8.83 rows=606 width=0) (actual time=0.015..0.015 rows=607 loops=20000)
+                       Index Cond: (dep_id = e1.dep_id)
+ Planning Time: 0.301 ms
+ JIT:
+   Functions: 12
+   Options: Inlining true, Optimization true, Expressions true, Deforming true
+   Timing: Generation 0.560 ms, Inlining 57.703 ms, Optimization 62.578 ms, Emission 38.619 ms, Total 159.460 ms
+ Execution Time: 3584.462 ms
+(16 rows)
+
+                                                               QUERY PLAN                                                                
+-----------------------------------------------------------------------------------------------------------------------------------------
+ Seq Scan on empregados e1  (cost=0.00..3042164.00 rows=6667 width=19) (actual time=159.029..3596.157 rows=9958 loops=1)
+   Filter: ((salario)::numeric > (SubPlan 1))
+   Rows Removed by Filter: 10042
+   SubPlan 1
+     ->  Aggregate  (cost=152.08..152.09 rows=1 width=32) (actual time=0.171..0.171 rows=1 loops=20000)
+           ->  Bitmap Heap Scan on empregados e2  (cost=8.98..150.56 rows=606 width=4) (actual time=0.026..0.137 rows=607 loops=20000)
+                 Recheck Cond: (e1.dep_id = dep_id)
+                 Heap Blocks: exact=2646921
+                 ->  Bitmap Index Scan on idx_dep_id  (cost=0.00..8.83 rows=606 width=0) (actual time=0.015..0.015 rows=607 loops=20000)
+                       Index Cond: (dep_id = e1.dep_id)
+ Planning Time: 0.288 ms
+ JIT:
+   Functions: 12
+   Options: Inlining true, Optimization true, Expressions true, Deforming true
+   Timing: Generation 0.557 ms, Inlining 57.672 ms, Optimization 62.816 ms, Emission 37.792 ms, Total 158.838 ms
+ Execution Time: 3613.309 ms
+(16 rows)
+
+                                                               QUERY PLAN                                                                
+-----------------------------------------------------------------------------------------------------------------------------------------
+ Seq Scan on empregados e1  (cost=0.00..3042164.00 rows=6667 width=19) (actual time=164.580..3641.243 rows=9958 loops=1)
+   Filter: ((salario)::numeric > (SubPlan 1))
+   Rows Removed by Filter: 10042
+   SubPlan 1
+     ->  Aggregate  (cost=152.08..152.09 rows=1 width=32) (actual time=0.173..0.173 rows=1 loops=20000)
+           ->  Bitmap Heap Scan on empregados e2  (cost=8.98..150.56 rows=606 width=4) (actual time=0.026..0.138 rows=607 loops=20000)
+                 Recheck Cond: (e1.dep_id = dep_id)
+                 Heap Blocks: exact=2646921
+                 ->  Bitmap Index Scan on idx_dep_id  (cost=0.00..8.83 rows=606 width=0) (actual time=0.015..0.015 rows=607 loops=20000)
+                       Index Cond: (dep_id = e1.dep_id)
+ Planning Time: 0.294 ms
+ JIT:
+   Functions: 12
+   Options: Inlining true, Optimization true, Expressions true, Deforming true
+   Timing: Generation 0.694 ms, Inlining 59.898 ms, Optimization 65.194 ms, Emission 38.749 ms, Total 164.536 ms
+ Execution Time: 3658.975 ms
+(16 rows)
+

@@ -1,0 +1,40 @@
+                                                                QUERY PLAN                                                                
+------------------------------------------------------------------------------------------------------------------------------------------
+ WindowAgg  (cost=0.29..1216.02 rows=20000 width=51) (actual time=48.175..93.672 rows=20000 loops=1)
+   ->  Index Scan using idx_dep_id on empregados  (cost=0.29..916.02 rows=20000 width=19) (actual time=36.207..69.934 rows=20000 loops=1)
+ Planning Time: 168.346 ms
+ Execution Time: 156.394 ms
+(4 rows)
+
+                                                               QUERY PLAN                                                               
+----------------------------------------------------------------------------------------------------------------------------------------
+ WindowAgg  (cost=0.29..1216.02 rows=20000 width=51) (actual time=0.445..12.025 rows=20000 loops=1)
+   ->  Index Scan using idx_dep_id on empregados  (cost=0.29..916.02 rows=20000 width=19) (actual time=0.012..4.830 rows=20000 loops=1)
+ Planning Time: 0.243 ms
+ Execution Time: 12.672 ms
+(4 rows)
+
+                                                               QUERY PLAN                                                               
+----------------------------------------------------------------------------------------------------------------------------------------
+ WindowAgg  (cost=0.29..1216.02 rows=20000 width=51) (actual time=0.424..11.102 rows=20000 loops=1)
+   ->  Index Scan using idx_dep_id on empregados  (cost=0.29..916.02 rows=20000 width=19) (actual time=0.012..4.194 rows=20000 loops=1)
+ Planning Time: 0.236 ms
+ Execution Time: 11.719 ms
+(4 rows)
+
+                                                               QUERY PLAN                                                               
+----------------------------------------------------------------------------------------------------------------------------------------
+ WindowAgg  (cost=0.29..1216.02 rows=20000 width=51) (actual time=0.419..11.126 rows=20000 loops=1)
+   ->  Index Scan using idx_dep_id on empregados  (cost=0.29..916.02 rows=20000 width=19) (actual time=0.012..4.171 rows=20000 loops=1)
+ Planning Time: 0.236 ms
+ Execution Time: 11.773 ms
+(4 rows)
+
+                                                               QUERY PLAN                                                               
+----------------------------------------------------------------------------------------------------------------------------------------
+ WindowAgg  (cost=0.29..1216.02 rows=20000 width=51) (actual time=0.421..11.026 rows=20000 loops=1)
+   ->  Index Scan using idx_dep_id on empregados  (cost=0.29..916.02 rows=20000 width=19) (actual time=0.012..4.154 rows=20000 loops=1)
+ Planning Time: 0.249 ms
+ Execution Time: 11.639 ms
+(4 rows)
+

@@ -1,0 +1,70 @@
+                                                          QUERY PLAN
+------------------------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=584.00..1243.00 rows=6667 width=22) (actual time=43.513..48.082 rows=5664 loops=1)
+   Hash Cond: (e.supervisor_id = e2.emp_id)
+   Join Filter: (e2.salario < e.salario)
+   Rows Removed by Join Filter: 14336
+   ->  Seq Scan on empregados e  (cost=0.00..334.00 rows=20000 width=15) (actual time=31.134..32.197 rows=20000 loops=1)
+   ->  Hash  (cost=334.00..334.00 rows=20000 width=15) (actual time=12.211..12.212 rows=20000 loops=1)
+         Buckets: 32768  Batches: 1  Memory Usage: 1218kB
+         ->  Seq Scan on empregados e2  (cost=0.00..334.00 rows=20000 width=15) (actual time=0.009..8.025 rows=20000 loops=1)
+ Planning Time: 331.927 ms
+ Execution Time: 57.669 ms
+(10 rows)
+
+                                                          QUERY PLAN                                                          
+------------------------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=584.00..1243.00 rows=6667 width=22) (actual time=5.090..9.707 rows=5664 loops=1)
+   Hash Cond: (e.supervisor_id = e2.emp_id)
+   Join Filter: (e2.salario < e.salario)
+   Rows Removed by Join Filter: 14336
+   ->  Seq Scan on empregados e  (cost=0.00..334.00 rows=20000 width=15) (actual time=0.003..1.051 rows=20000 loops=1)
+   ->  Hash  (cost=334.00..334.00 rows=20000 width=15) (actual time=4.950..4.951 rows=20000 loops=1)
+         Buckets: 32768  Batches: 1  Memory Usage: 1218kB
+         ->  Seq Scan on empregados e2  (cost=0.00..334.00 rows=20000 width=15) (actual time=0.007..1.931 rows=20000 loops=1)
+ Planning Time: 0.441 ms
+ Execution Time: 9.931 ms
+(10 rows)
+
+                                                          QUERY PLAN                                                          
+------------------------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=584.00..1243.00 rows=6667 width=22) (actual time=5.137..9.758 rows=5664 loops=1)
+   Hash Cond: (e.supervisor_id = e2.emp_id)
+   Join Filter: (e2.salario < e.salario)
+   Rows Removed by Join Filter: 14336
+   ->  Seq Scan on empregados e  (cost=0.00..334.00 rows=20000 width=15) (actual time=0.003..1.056 rows=20000 loops=1)
+   ->  Hash  (cost=334.00..334.00 rows=20000 width=15) (actual time=4.995..4.995 rows=20000 loops=1)
+         Buckets: 32768  Batches: 1  Memory Usage: 1218kB
+         ->  Seq Scan on empregados e2  (cost=0.00..334.00 rows=20000 width=15) (actual time=0.007..1.955 rows=20000 loops=1)
+ Planning Time: 0.446 ms
+ Execution Time: 9.984 ms
+(10 rows)
+
+                                                          QUERY PLAN                                                          
+------------------------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=584.00..1243.00 rows=6667 width=22) (actual time=5.114..9.676 rows=5664 loops=1)
+   Hash Cond: (e.supervisor_id = e2.emp_id)
+   Join Filter: (e2.salario < e.salario)
+   Rows Removed by Join Filter: 14336
+   ->  Seq Scan on empregados e  (cost=0.00..334.00 rows=20000 width=15) (actual time=0.003..1.057 rows=20000 loops=1)
+   ->  Hash  (cost=334.00..334.00 rows=20000 width=15) (actual time=4.973..4.974 rows=20000 loops=1)
+         Buckets: 32768  Batches: 1  Memory Usage: 1218kB
+         ->  Seq Scan on empregados e2  (cost=0.00..334.00 rows=20000 width=15) (actual time=0.008..1.961 rows=20000 loops=1)
+ Planning Time: 0.448 ms
+ Execution Time: 9.899 ms
+(10 rows)
+
+                                                          QUERY PLAN                                                          
+------------------------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=584.00..1243.00 rows=6667 width=22) (actual time=5.672..10.253 rows=5664 loops=1)
+   Hash Cond: (e.supervisor_id = e2.emp_id)
+   Join Filter: (e2.salario < e.salario)
+   Rows Removed by Join Filter: 14336
+   ->  Seq Scan on empregados e  (cost=0.00..334.00 rows=20000 width=15) (actual time=0.003..1.054 rows=20000 loops=1)
+   ->  Hash  (cost=334.00..334.00 rows=20000 width=15) (actual time=5.513..5.513 rows=20000 loops=1)
+         Buckets: 32768  Batches: 1  Memory Usage: 1218kB
+         ->  Seq Scan on empregados e2  (cost=0.00..334.00 rows=20000 width=15) (actual time=0.010..2.160 rows=20000 loops=1)
+ Planning Time: 0.437 ms
+ Execution Time: 10.477 ms
+(10 rows)
+

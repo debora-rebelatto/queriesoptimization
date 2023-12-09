@@ -4,17 +4,6 @@
 
 Aluna: Débora Rebelatto
 
-- O que é otimização de queries?
-- Porque otimizar queries?
-- Como o postgres otimiza queries?
-- O que é um plano de execução?
-- Como ler um plano de execução?
-- Como otimizar queries?
-- Quais queries foram utilizadas para o relatório?
-- Quais foram os resultados obtidos?
-- Como foi feita a análise dos resultados?
-- Quais foram as conclusões obtidas?
-
 ## Introdução
 
 Otimizar queries é importante para que o banco de dados tenha um melhor desempenho, pois quanto mais rápido as queries são executadas, mais rápido o banco de dados responde ao usuário.
@@ -39,20 +28,36 @@ A seguir temos os resultados da primeira execução do comando de `EXPLAIN ANALY
 
 Ordenando pelo tempo de total de forma decrescente, podemos facilitar a visualização sobre quais consultas são mais lentas para selecionar as três mais lentas para a análise de otimização.
 
-| Query    | Tempo de Planejamento (ms) | Tempo de Execução (ms) |
-| -------- | -------------------------- | ---------------------- |
-| Query 2  | 60.442                     | 35.730                 |
-| Query 9  | 85.155                     | 32.442                 |
-| Query 3  | 160.001                    | 32.058                 |
-| Query 4  | 60.226                     | 24.391                 |
-| Query 5  | 60.297                     | 24.311                 |
-| Query 1  | 27.843                     | 24.542                 |
-| Query 6  | 118.544                    | 21.278                 |
-| Query 7  | 52.424                     | 21.002                 |
-| Query 8  | 52.617                     | 21.252                 |
-| Query 10 | 52.263                     | 20.959                 |
+Para isso, utilizamos o Dojo-SQL com 20.000 tuplas.
 
-Irei levar em conta apenas o tempo de execução para a análise de otimização, pois o tempo de planejamento não é algo que podemos otimizar diretamente, e sim indiretamente através da otimização da query. Então, temos que as consultas mais lentas são: 2, 9 e 3
+| **Query** | **Tempo de Planejamento (ms)** | **Tempo de Execução (ms)** |
+| --------- | ------------------------------ | -------------------------- |
+| Query 1   | 331.927 ms                     | 57.669 ms                  |
+| Query 2   | 691.619 ms                     | 274.008 ms                 |
+| Query 3   | 199.448 ms                     | 78.898 ms                  |
+| Query 4   | 191.976 ms                     | 73.981 ms                  |
+| Query 5   | 214.081 ms                     | 76.328 ms                  |
+| Query 6   | 398.698 ms                     | 246.799 ms                 |
+| Query 7   | 582.382 ms                     | 269.430 ms                 |
+| Query 8   | 284.178 ms                     | 7601.813 ms                |
+| Query 9   | 168.346 ms                     | 156.394 ms                 |
+| Query 10  | 240.525 ms                     | 151.855 ms                 |
+
+Ordenado por tempo de Execução:
+| **Query** | **Tempo de Planejamento (ms)** | **Tempo de Execução (ms)** |
+| --------- | ------------------------------ | -------------------------- |
+| Query 8 | 284.178 ms | 7601.813 ms |
+| Query 2 | 691.619 ms | 274.008 ms |
+| Query 7 | 582.382 ms | 269.430 ms |
+| Query 6 | 398.698 ms | 246.799 ms |
+| Query 10 | 240.525 ms | 151.855 ms |
+| Query 9 | 168.346 ms | 156.394 ms |
+| Query 3 | 199.448 ms | 78.898 ms |
+| Query 5 | 214.081 ms | 76.328 ms |
+| Query 4 | 191.976 ms | 73.981 ms |
+| Query 1 | 331.927 ms | 57.669 ms |
+
+Irei levar em conta apenas o tempo de execução para a análise de otimização, pois o tempo de planejamento não é algo que podemos otimizar diretamente, e sim indiretamente através da otimização da query. Então, temos que as consultas mais lentas são: 8, 2 e 7.
 
 O resultado para a saída do comando de `EXPLAIN ANALYZE` pode ser encontrado na pasta `resultados` deste repositório.
 
@@ -70,28 +75,38 @@ Os cálculos para média e desvio não serão demonstrados, porém eles podem se
   \sqrt{\frac{\sum_{i=1}^{n}(x_i-\bar{x})^2}{n}}
   $$
 
-## [Query 2]()
+# Query 7
+
+**Descrição:**
+Listar os nomes dos departamentos com o total de salários pagos (sliding windows function)
+
+```sql
+EXPLAIN ANALYZE SELECT d.dep_id, d.nome AS departamento, SUM(e.salario) AS "Salario total"
+FROM departamentos d
+LEFT OUTER JOIN empregados e ON d.dep_id = e.dep_id
+GROUP BY d.dep_id, d.nome;
+```
+
+| **Query** | **Tempo de Planejamento (ms)** | **Tempo de Execução (ms)** |
+| --------- | ------------------------------ | -------------------------- |
+| 1         | 582.382                        | 269.430                    |
+| 2         | 0.487                          | 11.590                     |
+| 3         | 0.482                          | 14.615                     |
+| 4         | 0.501                          | 10.677                     |
+| 5         | 0.436                          | 10.649                     |
+
+|                            | **Média** | **Desvio Padrão** |
+| -------------------------- | --------- | ----------------- |
+| Tempo de Planejamento (ms) | 116.458   | 232.984           |
+| Tempo de Execução (ms)     | 63.392    | 86.462            |
+
+**Otimizando a Query**:
+
+# Query 2
 
 **Descrição:**
 
-Encontre os empregados com salario maior ou igual a média do seu departamento. Deve ser reportado o salario do empregado e a média do departamento (dica: usar window function com subconsulta)
-
-```sql
-                                                         QUERY PLAN                                                          
------------------------------------------------------------------------------------------------------------------------------
- HashAggregate  (cost=5.62..5.95 rows=33 width=8) (actual time=17.296..17.300 rows=31 loops=1)
-   Group Key: d.dep_id
-   Batches: 1  Memory Usage: 24kB
-   ->  Hash Join  (cost=1.74..5.12 rows=100 width=8) (actual time=17.246..17.270 rows=98 loops=1)
-         Hash Cond: (e.dep_id = d.dep_id)
-         ->  Seq Scan on empregados e  (cost=0.00..2.00 rows=100 width=8) (actual time=7.075..7.081 rows=100 loops=1)
-         ->  Hash  (cost=1.33..1.33 rows=33 width=4) (actual time=10.147..10.148 rows=33 loops=1)
-               Buckets: 1024  Batches: 1  Memory Usage: 10kB
-               ->  Seq Scan on departamentos d  (cost=0.00..1.33 rows=33 width=4) (actual time=0.270..0.276 rows=33 loops=1)
- Planning Time: 195.144 ms
- Execution Time: 48.203 ms
-(11 rows)
-```
+Listar o maior salario de cada departamento (usa o group by)]
 
 ```sql
 EXPLAIN ANALYZE
@@ -101,53 +116,49 @@ ON e.dep_id = d.dep_id
 GROUP BY d.dep_id;
 ```
 
+| **Query** | **Tempo de Planejamento (ms)** | **Tempo de Execução (ms)** |
+| --------- | ------------------------------ | -------------------------- |
+| 1         | 691.619                        | 274.008                    |
+| 2         | 0.305                          | 7.058                      |
+| 3         | 0.383                          | 6.973                      |
+| 4         | 0.308                          | 6.931                      |
+| 5         | 0.306                          | 6.980                      |
 
-| Query | Planning Time (ms) | Execution Time (ms) |
-|-------|---------------------|---------------------|
-| 1     | 195.144              | 0.174               |
-| 2     | 0.286               | 0.174               |
-| 2     | 0.279               | 0.176               |
-| 4     | 0.286               | 0.178               |
-| 5     | 0.304               | 0.175               |
+|                            | **Média** | **Desvio Padrão** |
+| -------------------------- | --------- | ----------------- |
+| Tempo de Planejamento (ms) | 138.385   | 282.124           |
+| Tempo de Execução (ms)     | 60.590    | 91.025            |
 
+**Otimizando a Query**:
 
-## [Query 9]()
-
-Descrição:
-Faça uma consulta capaz de listar os dep_id, nome, salario, e as médias de cada departamento utilizando o windows function;
-
-```sql
-EXPLAIN ANALYZE SELECT emp_id, nome, dep_id, salario, AVG(salario)
-OVER (PARTITION BY dep_id)
-FROM empregados;
-```
-
-| Query | Planning Time (ms) | Execution Time (ms) |
-|-------|---------------------|----------------------|
-| 1 | 290.809 | 317.745 |
-| 2 | 0.276 | 0.211 |
-| 3 | 0.247 | 0.210 |
-| 4 | 0.363 | 0.207 |
-| 5 | 0.502 | 0.377 |
-
-## [Query 3](./resultados/output8.txt)
-
-Descrição:
-Listar o dep_id, nome e o salario do funcionario com maior salario dentro de cada departamento (usar o with)
+Crie um index:
 
 ```sql
-EXPLAIN ANALYZE SELECT dep_id, nome, salario
-FROM empregados
-WHERE (dep_id,salario)
-IN (SELECT dep_id, MAX(salario)
-FROM empregados
-GROUP BY dep_id);
+CREATE INDEX dep_id_index ON departamentos (dep_id);
 ```
 
-|Query| Planning Time (ms) | Execution Time (ms) |
-|---|---|
-|1| 227.560 | 49.098 |
-| 2|0.316 | 0.179 |
-| 3|0.610 | 0.343 |
-| 4|0.345 | 0.186 |
-| 5|0.320 | 0.180 |
+# Query 8
+
+**Descrição:**
+Listar os nomes dos colaboradores com salario maior que a média do seu departamento (dica: usar subconsultas);
+
+```sql
+EXPLAIN ANALYZE select emp_id,nome, dep_id, salario
+from empregados e1
+where salario > (select avg(salario)
+from empregados e2
+where e1.dep_id = e2.dep_id);
+```
+
+| **Query** | **Tempo de Planejamento (ms)** | **Tempo de Execução (ms)** |
+| --------- | ------------------------------ | -------------------------- |
+| 1         | 258.138                        | 85.826                     |
+| 2         | 0.342                          | 7.024                      |
+| 3         | 0.539                          | 17.619                     |
+| 4         | 0.512                          | 12.550                     |
+| 5         | 0.344                          | 7.457                      |
+
+|                            | **Média** | **Desvio Padrão** |
+| -------------------------- | --------- | ----------------- |
+| Tempo de Planejamento (ms) | 51.975    | 102.935           |
+| Tempo de Execução (ms)     | 26.495    | 36.598            |

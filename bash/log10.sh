@@ -3,13 +3,11 @@
 sudo service postgresql stop
 sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
 sudo service postgresql start
-# sudo -u postgres psql -d dojo
 
-# Loop to run the query 5 times
 for i in {1..5}
 do
     psql -d dojo -c "EXPLAIN ANALYZE
-SELECT e.nome as "empregado", e2.nome as "chefe" , e.salario as "emp sal" , e2.salario as "chef sal"
+SELECT e.nome as "empregado", e2.nome as "chefe" , e.salario as "empsal" , e2.salario as "chefsal"
 FROM empregados e
 JOIN empregados e2 ON e.supervisor_id = e2.emp_id
 WHERE e2.salario < e.salario;
@@ -20,9 +18,7 @@ done
 sudo service postgresql stop
 sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
 sudo service postgresql start
-# sudo -u postgres psql -d dojo
 
-# Loop to run the query 5 times
 for i in {1..5}
 do
     psql -d dojo -c "EXPLAIN ANALYZE
@@ -37,9 +33,7 @@ done
 sudo service postgresql stop
 sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
 sudo service postgresql start
-# sudo -u postgres psql -d dojo
 
-# Loop to run the query 5 times
 for i in {1..5}
 do
     psql -d dojo -c "EXPLAIN ANALYZE SELECT dep_id, nome, salario
@@ -54,9 +48,7 @@ done
 sudo service postgresql stop
 sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
 sudo service postgresql start
-# sudo -u postgres psql -d dojo
 
-# Loop to run the query 5 times
 for i in {1..5}
 do
     psql -d dojo -c "EXPLAIN ANALYZE select d.nome
@@ -71,9 +63,7 @@ done
 sudo service postgresql stop
 sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
 sudo service postgresql start
-# sudo -u postgres psql -d dojo
 
-# Loop to run the query 5 times
 for i in {1..5}
 do
     psql -d dojo -c "EXPLAIN ANALYZE select d.nome, count(e.emp_id)
@@ -86,9 +76,7 @@ done
 sudo service postgresql stop
 sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
 sudo service postgresql start
-# sudo -u postgres psql -d dojo
 
-# Loop to run the query 5 times
 for i in {1..5}
 do
     psql -d dojo -c "EXPLAIN ANALYZE select e1.nome, e1.dep_id from empregados e1 join
@@ -100,12 +88,10 @@ done
 sudo service postgresql stop
 sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
 sudo service postgresql start
-# sudo -u postgres psql -d dojo
 
-# Loop to run the query 5 times
 for i in {1..5}
 do
-    psql -d dojo -c "EXPLAIN ANALYZE SELECT d.dep_id, d.nome AS departamento, SUM(e.salario) AS "Salario total"
+    psql -d dojo -c "EXPLAIN ANALYZE SELECT d.dep_id, d.nome AS departamento, SUM(e.salario) AS "Salariototal"
 FROM departamentos d
 LEFT OUTER JOIN empregados e ON d.dep_id = e.dep_id
 GROUP BY d.dep_id, d.nome;
@@ -115,9 +101,7 @@ done
 sudo service postgresql stop
 sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
 sudo service postgresql start
-# sudo -u postgres psql -d dojo
 
-# Loop to run the query 5 times
 for i in {1..5}
 do
     psql -d dojo -c "EXPLAIN ANALYZE select emp_id,nome, dep_id, salario
@@ -131,9 +115,7 @@ done
 sudo service postgresql stop
 sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
 sudo service postgresql start
-# sudo -u postgres psql -d dojo
 
-# Loop to run the query 5 times
 for i in {1..5}
 do
     psql -d dojo -c "EXPLAIN ANALYZE SELECT emp_id, nome, dep_id, salario, AVG(salario)
@@ -145,9 +127,7 @@ done
 sudo service postgresql stop
 sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
 sudo service postgresql start
-# sudo -u postgres psql -d dojo
 
-# Loop to run the query 5 times
 for i in {1..5}
 do
     psql -d dojo -c "EXPLAIN ANALYZE SELECT e.nome, e.dep_id, e.salario, AVG(e.salario)
@@ -158,4 +138,34 @@ FROM empregados GROUP BY dep_id) AS t
 ON e.dep_id = t.dep_id
 WHERE e.salario >= t.media_salario;
 " >> output10.txt
+done
+
+sudo service postgresql stop
+sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
+sudo service postgresql start
+
+for i in {1..5}
+do
+    psql -d dojo -c "EXPLAIN ANALYZE SELECT d.dep_id, d.nome AS departamento, SUM(e.salario) AS "Salariototal"
+FROM departamentos d
+LEFT OUTER JOIN empregados e ON d.dep_id = e.dep_id
+WHERE e.salario > 10000
+GROUP BY d.dep_id, d.nome;
+
+" >> optimized-output7-2.txt
+done
+
+
+sudo service postgresql stop
+sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
+sudo service postgresql start
+
+for i in {1..5}
+do
+    psql -d dojo -c "EXPLAIN ANALYZE SELECT d.dep_id, MAX(e.salario) AS "Maximosalario"
+FROM departamentos d
+JOIN empregados e ON d.dep_id = e.dep_id
+WHERE d.dep_id IN (1, 2, 3)
+GROUP BY d.dep_id;
+" >> optimized-output2.txt
 done
