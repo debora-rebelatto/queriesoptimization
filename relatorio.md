@@ -24,11 +24,7 @@ O `ANALYZE` é uma opção do comando `EXPLAIN` que nos permite executar a query
 
 ## Resultados da primeira execução
 
-A seguir temos os resultados da primeira execução do comando de `EXPLAIN ANALYZE` para cada uma das 10 consultas fornecidas, onde analisamos o tempo de planejamento e de execução para cada uma limpando o buffer antes para evitar que o cache do sistema influencie nos resultados.
-
-Para isso, utilizamos o Dojo-SQL com 20.000 tuplas.
-
-Como o tempo de consulta pode variar e em múltiplas execuções podemos encontrar valores diferentes, iremos executar cada consulta 5 vezes e tirar a média dos tempos de planejamento e execução para cada uma. Ordenamos a saída de forma decrescente para facilitar a visualização sobre quais consultas são mais lentas para selecionar as três mais lentas para a análise de otimização.
+Foi utilizado o dataset fornecido no repositório do Dojo-SQL com 20.000 para realizar os testes de otimização. Para encontrar as queries mais lentas, iremos executar cada uma delas 5 vezes e tirar a média dos tempos de planejamento e execução para cada uma. Ordenamos a saída de forma decrescente para facilitar a visualização sobre quais consultas são mais lentas para selecionar as três mais lentas para a análise de otimização.
 
 | **Consulta** | **Planning Time (ms)** | **Execution Time (ms)** |
 | ------------ | ---------------------- | ----------------------- |
