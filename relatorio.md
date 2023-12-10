@@ -26,81 +26,21 @@ O `ANALYZE` é uma opção do comando `EXPLAIN` que nos permite executar a query
 
 Foi utilizado o dataset fornecido no repositório do Dojo-SQL com 20.000 para realizar os testes de otimização. Para encontrar as queries mais lentas, iremos executar cada uma delas 5 vezes e tirar a média dos tempos de planejamento e execução para cada uma. Ordenamos a saída de forma decrescente para facilitar a visualização sobre quais consultas são mais lentas para selecionar as três mais lentas para a análise de otimização.
 
-| **Consulta** | **Planning Time (ms)** | **Execution Time (ms)** |
-| ------------ | ---------------------- | ----------------------- |
-| 8            | 195.9026               | 24282.1556              |
-| 5            | 883.5788               | 518.247                 |
-| 6            | 246.775                | 142.0236                |
-| 1            | 397.452                | 123.204                 |
-| 2            | 285.126                | 116.389                 |
-| 7            | 178.038                | 116.487                 |
-| 4            | 181.137                | 116.387                 |
-| 3            | 188.281                | 101.394                 |
-| 9            | 140.578                | 108.161                 |
-| 10           | 261.7074               | 110.873                 |
+| **Query** | **Média Planning Time (ms)** | **Média Execution Time (ms)** |
+| --------- | ---------------------------- | ----------------------------- |
+| 8         | 194.181                      | 20210.965                     |
+| 6         | 240.118                      | 142.855                       |
+| 1         | 344.514                      | 136.114                       |
+| 2         | 277.056                      | 116.720                       |
+| 4         | 198.352                      | 116.376                       |
+| 5         | 187.177                      | 116.145                       |
+| 7         | 184.350                      | 116.288                       |
+| 3         | 190.267                      | 101.806                       |
+| 9         | 167.627                      | 108.156                       |
+| 10        | 184.397                      | 107.856                       |
 
-Irei levar em conta apenas o tempo de execução para a análise de otimização, pois o tempo de planejamento não é algo que podemos otimizar diretamente, e sim indiretamente através da otimização da query. Então, temos que as consultas mais lentas, em média, são: 8, 5 e 6.
 
-## Query 5
-
-**Descrição:**
-
-Listar os departamentos com o número de colaboradores
-
-```sql
-EXPLAIN ANALYZE select d.nome, count(e.emp_id)
-from departamentos d
-join empregados e on d.dep_id=e.dep_id
-group by d.nome;
-```
-
-```sql
-
-                                                           QUERY PLAN
---------------------------------------------------------------------------------------------------------------------------------
- HashAggregate  (cost=710.74..710.95 rows=21 width=22) (actual time=87.298..87.302 rows=21 loops=1)
-   Group Key: d.nome
-   Batches: 1  Memory Usage: 24kB
-   ->  Hash Join  (cost=1.74..610.74 rows=20000 width=18) (actual time=52.511..84.236 rows=19409 loops=1)
-         Hash Cond: (e.dep_id = d.dep_id)
-         ->  Seq Scan on empregados e  (cost=0.00..334.00 rows=20000 width=8) (actual time=19.544..48.100 rows=20000 loops=1)
-         ->  Hash  (cost=1.33..1.33 rows=33 width=18) (actual time=32.950..32.951 rows=33 loops=1)
-               Buckets: 1024  Batches: 1  Memory Usage: 10kB
-               ->  Seq Scan on departamentos d  (cost=0.00..1.33 rows=33 width=18) (actual time=13.807..13.813 rows=33 loops=1)
- Planning Time: 199.195 ms
- Execution Time: 105.015 ms
-(11 rows)
-```
-
-| Execução | Planejamento (ms) | Execução (ms) |
-| -------- | ----------------- | ------------- |
-| 1        | 199.195           | 105.015       |
-| 2        | 0.330             | 7.444         |
-| 3        | 0.352             | 7.443         |
-| 4        | 0.356             | 7.411         |
-| 5        | 0.346             | 7.422         |
-
-Certamente! Aqui estão os valores de "Planning Time" e "Execution Time" para as consultas fornecidas:
-
-| Consulta | Planning Time (ms) | Execution Time (ms) |
-| -------- | ------------------ | ------------------- |
-| 1        | 532.443            | 261.378             |
-| 2        | 0.486              | 8.387               |
-| 3        | 0.487              | 8.221               |
-| 4        | 0.653              | 7.832               |
-| 5        | 0.483              | 9.288               |
-
-Estes valores representam o tempo estimado de planejamento (Planning Time) e o tempo real de execução (Execution Time) das consultas apresentadas.
-
-### Planejamento (ms)
-
-- Média: 120.916 ms
-- Desvio Padrão: 134.222 ms
-
-### Execução (ms)
-
-- Média: 26.7476 ms
-- Desvio Padrão: 42.7815 ms
+Será levado em conta apenas o tempo de execução para a análise de otimização, pois o tempo de planejamento não é algo que podemos otimizar diretamente, e sim indiretamente através da otimização da query. Então, temos que as consultas mais lentas, em média, são: 8, 6 e 1.
 
 ## Query 6
 
@@ -215,8 +155,57 @@ WHERE e2.emp_id IS NOT NULL;
  Planning Time: 336.746 ms
  Execution Time: 73.970 ms
 (12 rows)
-
 ```
+
+## Query 5
+
+**Descrição:**
+
+Listar os departamentos com o número de colaboradores
+
+```sql
+EXPLAIN ANALYZE select d.nome, count(e.emp_id)
+from departamentos d
+join empregados e on d.dep_id=e.dep_id
+group by d.nome;
+```
+
+```sql
+
+                                                           QUERY PLAN
+--------------------------------------------------------------------------------------------------------------------------------
+ HashAggregate  (cost=710.74..710.95 rows=21 width=22) (actual time=87.298..87.302 rows=21 loops=1)
+   Group Key: d.nome
+   Batches: 1  Memory Usage: 24kB
+   ->  Hash Join  (cost=1.74..610.74 rows=20000 width=18) (actual time=52.511..84.236 rows=19409 loops=1)
+         Hash Cond: (e.dep_id = d.dep_id)
+         ->  Seq Scan on empregados e  (cost=0.00..334.00 rows=20000 width=8) (actual time=19.544..48.100 rows=20000 loops=1)
+         ->  Hash  (cost=1.33..1.33 rows=33 width=18) (actual time=32.950..32.951 rows=33 loops=1)
+               Buckets: 1024  Batches: 1  Memory Usage: 10kB
+               ->  Seq Scan on departamentos d  (cost=0.00..1.33 rows=33 width=18) (actual time=13.807..13.813 rows=33 loops=1)
+ Planning Time: 199.195 ms
+ Execution Time: 105.015 ms
+(11 rows)
+```
+
+| Execução | Planejamento (ms) | Execução (ms) |
+| -------- | ----------------- | ------------- |
+| 1        | 199.195           | 105.015       |
+| 2        | 0.330             | 7.444         |
+| 3        | 0.352             | 7.443         |
+| 4        | 0.356             | 7.411         |
+| 5        | 0.346             | 7.422         |
+
+### Planejamento (ms)
+
+- Média: 120.916 ms
+- Desvio Padrão: 134.222 ms
+
+### Execução (ms)
+
+- Média: 26.7476 ms
+- Desvio Padrão: 42.7815 ms
+
 
 ## Query 8
 

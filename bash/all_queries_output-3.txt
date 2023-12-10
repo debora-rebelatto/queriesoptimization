@@ -60,7 +60,7 @@
  Execution Time: 116.121 ms
 (12 rows)
 
-                                                           QUERY PLAN                                                           
+                                                           QUERY PLAN
 --------------------------------------------------------------------------------------------------------------------------------
  HashAggregate  (cost=710.74..710.95 rows=21 width=22) (actual time=87.267..87.272 rows=21 loops=1)
    Group Key: d.nome
