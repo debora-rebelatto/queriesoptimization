@@ -39,8 +39,55 @@ Foi utilizado o dataset fornecido no repositório do Dojo-SQL com 20.000 para re
 | 9         | 167.627                      | 108.156                       |
 | 10        | 184.397                      | 107.856                       |
 
-
 Será levado em conta apenas o tempo de execução para a análise de otimização, pois o tempo de planejamento não é algo que podemos otimizar diretamente, e sim indiretamente através da otimização da query. Então, temos que as consultas mais lentas, em média, são: 8, 6 e 1.
+
+## Query 1
+
+**Descrição:**
+
+Listar os empregados (nomes) que tem salário maior que seu chefe (usar o join)
+
+```sql
+EXPLAIN ANALYZE
+SELECT e.nome as "empregado", e2.nome as "chefe" , e.salario as "empsal" , e2.salario as "chefsal"
+FROM empregados e
+JOIN empregados e2 ON e.supervisor_id = e2.emp_id
+WHERE e2.salario < e.salario;
+```
+
+| **Query** | **Planning Time (ms)** | **Execution Time (ms)** |
+| --------- | ---------------------- | ----------------------- |
+| 1         | 307.795                | 178.536                 |
+| 2         | 0.345                  | 10.060                  |
+| 3         | 0.357                  | 10.399                  |
+| 4         | 0.354                  | 17.137                  |
+| 5         | 0.354                  | 10.088                  |
+
+### Planejamento (ms)
+
+- Média: 61.241 ms
+- Desvio Padrão: 123.755 ms
+
+### Execução (ms)
+
+- Média: 45.844 ms
+- Desvio Padrão: 68.996 ms
+
+```sql
+                                                          QUERY PLAN
+-------------------------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=584.00..1243.00 rows=6667 width=22) (actual time=142.709..147.534 rows=9409 loops=1)
+   Hash Cond: (e.supervisor_id = e2.emp_id)
+   Join Filter: (e2.salario < e.salario)
+   Rows Removed by Join Filter: 10591
+   ->  Seq Scan on empregados e  (cost=0.00..334.00 rows=20000 width=15) (actual time=19.619..20.656 rows=20000 loops=1)
+   ->  Hash  (cost=334.00..334.00 rows=20000 width=15) (actual time=122.923..122.924 rows=20000 loops=1)
+         Buckets: 32768  Batches: 1  Memory Usage: 1218kB
+         ->  Seq Scan on empregados e2  (cost=0.00..334.00 rows=20000 width=15) (actual time=0.009..96.151 rows=20000 loops=1)
+ Planning Time: 307.795 ms
+ Execution Time: 178.536 ms
+(10 rows)
+```
 
 ## Query 6
 
@@ -205,7 +252,6 @@ group by d.nome;
 
 - Média: 26.7476 ms
 - Desvio Padrão: 42.7815 ms
-
 
 ## Query 8
 
