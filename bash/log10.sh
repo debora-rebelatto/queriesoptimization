@@ -4,8 +4,7 @@ sudo service postgresql stop
 sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
 sudo service postgresql start
 
-for i in {1..5}
-do
+
     psql -d dojo -c "EXPLAIN ANALYZE
 SELECT e.nome as "empregado", e2.nome as "chefe" , e.salario as "empsal" , e2.salario as "chefsal"
 FROM empregados e
@@ -99,8 +98,23 @@ do
     psql -d dojo -c "EXPLAIN ANALYZE select e1.nome, e1.dep_id from empregados e1 join
 empregados e2 on e1.supervisor_id=e2.emp_id
 where e1.dep_id!=e2.dep_id;
-" >> output6.txt
+" >> output6-2.txt
 done
+
+sudo service postgresql stop
+sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
+sudo service postgresql start
+
+for i in {1..5}
+do
+    psql -d dojo -c "EXPLAIN ANALYZE SELECT e1.nome, e1.dep_id
+FROM empregados e1
+LEFT JOIN empregados e2 ON e1.supervisor_id = e2.emp_id AND e1.dep_id <> e2.dep_id
+WHERE e2.emp_id IS NOT NULL;
+" >> output6-optimized-2.txt
+done
+
+
 
 sudo service postgresql stop
 sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
@@ -111,25 +125,8 @@ do
     psql -d dojo -c "EXPLAIN ANALYZE SELECT d.dep_id, d.nome AS departamento, SUM(e.salario) AS "Salariototal"
 FROM departamentos d
 LEFT OUTER JOIN empregados e ON d.dep_id = e.dep_id
-GROUP BY d.dep_id, d.nome;
-" >> output7.txt
+GROUP BY d.dep_id, d.nome;" >> output7.txt
 done
-
-
-sudo service postgresql stop
-sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
-sudo service postgresql start
-
-for i in {1..5}
-do
-    psql -d dojo -c "EXPLAIN ANALYZE SELECT d.dep_id, d.nome AS departamento, SUM(e.salario) AS "Salariototal"
-FROM departamentos d
-INNER JOIN empregados e ON d.dep_id = e.dep_id
-GROUP BY d.dep_id, d.nome;
-" >> output7-OPTIMIZED2.txt
-done
-
-
 
 sudo service postgresql stop
 sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
@@ -145,12 +142,6 @@ where e1.dep_id = e2.dep_id);
 " >> output8.txt
 done
 
-psql -d dojo -c "select emp_id,nome, dep_id, salario
-from empregados e1
-where salario > (select avg(salario)
-from empregados e2
-where e1.dep_id = e2.dep_id);
-" >> output8-noexplain.txt
 
 sudo service postgresql stop
 sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
@@ -178,48 +169,4 @@ FROM empregados GROUP BY dep_id) AS t
 ON e.dep_id = t.dep_id
 WHERE e.salario >= t.media_salario;
 " >> output10.txt
-done
-
-sudo service postgresql stop
-sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
-sudo service postgresql start
-
-for i in {1..5}
-do
-    psql -d dojo -c "EXPLAIN ANALYSE SELECT e1.emp_id, e1.nome, e1.dep_id, e1.salario
-FROM empregados e1
-JOIN (
-    SELECT dep_id, AVG(salario) AS salario_medio
-    FROM empregados
-    GROUP BY dep_id
-) s ON e1.dep_id = s.dep_id
-WHERE e1.salario > s.salario_medio;
-
-" >> optimized-output8-1.txt
-done
-
-    psql -d dojo -c "SELECT e1.emp_id, e1.nome, e1.dep_id, e1.salario
-FROM empregados e1
-JOIN (
-    SELECT dep_id, AVG(salario) AS salario_medio
-    FROM empregados
-    GROUP BY dep_id
-) s ON e1.dep_id = s.dep_id
-WHERE e1.salario > s.salario_medio;
-
-" >> optimized-output8-1-NOEXPLAIN.txt
-
-
-sudo service postgresql stop
-sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
-sudo service postgresql start
-
-for i in {1..5}
-do
-    psql -d dojo -c "EXPLAIN ANALYZE SELECT d.dep_id, MAX(e.salario) AS "Maximosalario"
-FROM departamentos d
-JOIN empregados e ON d.dep_id = e.dep_id
-WHERE d.dep_id IN (1, 2, 3)
-GROUP BY d.dep_id;
-" >> optimized-output2.txt
 done

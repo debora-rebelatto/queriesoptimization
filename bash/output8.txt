@@ -1,0 +1,90 @@
+                                                          QUERY PLAN
+-------------------------------------------------------------------------------------------------------------------------------
+ Seq Scan on empregados e1  (cost=0.00..7710984.00 rows=6667 width=19) (actual time=1236.394..16445.748 rows=10013 loops=1)
+   Filter: ((salario)::numeric > (SubPlan 1))
+   Rows Removed by Filter: 9987
+   SubPlan 1
+     ->  Aggregate  (cost=385.52..385.53 rows=1 width=32) (actual time=0.761..0.761 rows=1 loops=20000)
+           ->  Seq Scan on empregados e2  (cost=0.00..384.00 rows=606 width=4) (actual time=0.002..0.730 rows=607 loops=20000)
+                 Filter: (e1.dep_id = dep_id)
+                 Rows Removed by Filter: 19393
+ Planning Time: 182.612 ms
+ JIT:
+   Functions: 11
+   Options: Inlining true, Optimization true, Expressions true, Deforming true
+   Timing: Generation 86.439 ms, Inlining 427.239 ms, Optimization 358.254 ms, Emission 399.381 ms, Total 1271.314 ms
+ Execution Time: 21019.391 ms
+(14 rows)
+
+                                                          QUERY PLAN
+-------------------------------------------------------------------------------------------------------------------------------
+ Seq Scan on empregados e1  (cost=0.00..7710984.00 rows=6667 width=19) (actual time=216.195..15983.267 rows=10013 loops=1)
+   Filter: ((salario)::numeric > (SubPlan 1))
+   Rows Removed by Filter: 9987
+   SubPlan 1
+     ->  Aggregate  (cost=385.52..385.53 rows=1 width=32) (actual time=0.788..0.788 rows=1 loops=20000)
+           ->  Seq Scan on empregados e2  (cost=0.00..384.00 rows=606 width=4) (actual time=0.002..0.755 rows=607 loops=20000)
+                 Filter: (e1.dep_id = dep_id)
+                 Rows Removed by Filter: 19393
+ Planning Time: 0.214 ms
+ JIT:
+   Functions: 11
+   Options: Inlining true, Optimization true, Expressions true, Deforming true
+   Timing: Generation 0.548 ms, Inlining 61.928 ms, Optimization 105.875 ms, Emission 47.177 ms, Total 215.528 ms
+ Execution Time: 16000.250 ms
+(14 rows)
+
+                                                          QUERY PLAN
+-------------------------------------------------------------------------------------------------------------------------------
+ Seq Scan on empregados e1  (cost=0.00..7710984.00 rows=6667 width=19) (actual time=240.511..19197.113 rows=10013 loops=1)
+   Filter: ((salario)::numeric > (SubPlan 1))
+   Rows Removed by Filter: 9987
+   SubPlan 1
+     ->  Aggregate  (cost=385.52..385.53 rows=1 width=32) (actual time=0.946..0.946 rows=1 loops=20000)
+           ->  Seq Scan on empregados e2  (cost=0.00..384.00 rows=606 width=4) (actual time=0.003..0.906 rows=607 loops=20000)
+                 Filter: (e1.dep_id = dep_id)
+                 Rows Removed by Filter: 19393
+ Planning Time: 0.228 ms
+ JIT:
+   Functions: 11
+   Options: Inlining true, Optimization true, Expressions true, Deforming true
+   Timing: Generation 0.622 ms, Inlining 99.148 ms, Optimization 97.236 ms, Emission 42.899 ms, Total 239.905 ms
+ Execution Time: 19216.829 ms
+(14 rows)
+
+                                                          QUERY PLAN
+-------------------------------------------------------------------------------------------------------------------------------
+ Seq Scan on empregados e1  (cost=0.00..7710984.00 rows=6667 width=19) (actual time=231.835..16767.398 rows=10013 loops=1)
+   Filter: ((salario)::numeric > (SubPlan 1))
+   Rows Removed by Filter: 9987
+   SubPlan 1
+     ->  Aggregate  (cost=385.52..385.53 rows=1 width=32) (actual time=0.826..0.826 rows=1 loops=20000)
+           ->  Seq Scan on empregados e2  (cost=0.00..384.00 rows=606 width=4) (actual time=0.002..0.792 rows=607 loops=20000)
+                 Filter: (e1.dep_id = dep_id)
+                 Rows Removed by Filter: 19393
+ Planning Time: 0.214 ms
+ JIT:
+   Functions: 11
+   Options: Inlining true, Optimization true, Expressions true, Deforming true
+   Timing: Generation 0.569 ms, Inlining 105.339 ms, Optimization 83.726 ms, Emission 41.725 ms, Total 231.360 ms
+ Execution Time: 16785.263 ms
+(14 rows)
+
+                                                          QUERY PLAN
+-------------------------------------------------------------------------------------------------------------------------------
+ Seq Scan on empregados e1  (cost=0.00..7710984.00 rows=6667 width=19) (actual time=236.827..17637.013 rows=10013 loops=1)
+   Filter: ((salario)::numeric > (SubPlan 1))
+   Rows Removed by Filter: 9987
+   SubPlan 1
+     ->  Aggregate  (cost=385.52..385.53 rows=1 width=32) (actual time=0.869..0.869 rows=1 loops=20000)
+           ->  Seq Scan on empregados e2  (cost=0.00..384.00 rows=606 width=4) (actual time=0.002..0.834 rows=607 loops=20000)
+                 Filter: (e1.dep_id = dep_id)
+                 Rows Removed by Filter: 19393
+ Planning Time: 0.228 ms
+ JIT:
+   Functions: 11
+   Options: Inlining true, Optimization true, Expressions true, Deforming true
+   Timing: Generation 0.697 ms, Inlining 107.849 ms, Optimization 90.770 ms, Emission 37.215 ms, Total 236.531 ms
+ Execution Time: 17654.500 ms
+(14 rows)
+

@@ -26,156 +26,191 @@ O `ANALYZE` é uma opção do comando `EXPLAIN` que nos permite executar a query
 
 A seguir temos os resultados da primeira execução do comando de `EXPLAIN ANALYZE` para cada uma das 10 consultas fornecidas, onde analisamos o tempo de planejamento e de execução para cada uma limpando o buffer antes para evitar que o cache do sistema influencie nos resultados.
 
-Ordenando pelo tempo de total de forma decrescente, podemos facilitar a visualização sobre quais consultas são mais lentas para selecionar as três mais lentas para a análise de otimização.
-
 Para isso, utilizamos o Dojo-SQL com 20.000 tuplas.
 
-| **Query** | **Tempo de Planejamento (ms)** | **Tempo de Execução (ms)** |
-| --------- | ------------------------------ | -------------------------- |
-| Query 1   | 331.927 ms                     | 57.669 ms                  |
-| Query 2   | 691.619 ms                     | 274.008 ms                 |
-| Query 3   | 199.448 ms                     | 78.898 ms                  |
-| Query 4   | 191.976 ms                     | 73.981 ms                  |
-| Query 5   | 214.081 ms                     | 76.328 ms                  |
-| Query 6   | 398.698 ms                     | 246.799 ms                 |
-| Query 7   | 582.382 ms                     | 269.430 ms                 |
-| Query 8   | 284.178 ms                     | 7601.813 ms                |
-| Query 9   | 168.346 ms                     | 156.394 ms                 |
-| Query 10  | 240.525 ms                     | 151.855 ms                 |
+Como o tempo de consulta pode variar e em múltiplas execuções podemos encontrar valores diferentes, iremos executar cada consulta 5 vezes e tirar a média dos tempos de planejamento e execução para cada uma. Ordenamos a saída de forma decrescente para facilitar a visualização sobre quais consultas são mais lentas para selecionar as três mais lentas para a análise de otimização.
 
-Ordenado por tempo de Execução:
-| **Query** | **Tempo de Planejamento (ms)** | **Tempo de Execução (ms)** |
-| --------- | ------------------------------ | -------------------------- |
-| Query 8 | 284.178 ms | 7601.813 ms |
-| Query 2 | 691.619 ms | 274.008 ms |
-| Query 7 | 582.382 ms | 269.430 ms |
-| Query 6 | 398.698 ms | 246.799 ms |
-| Query 10 | 240.525 ms | 151.855 ms |
-| Query 9 | 168.346 ms | 156.394 ms |
-| Query 3 | 199.448 ms | 78.898 ms |
-| Query 5 | 214.081 ms | 76.328 ms |
-| Query 4 | 191.976 ms | 73.981 ms |
-| Query 1 | 331.927 ms | 57.669 ms |
+| **Consulta** | **Planning Time (ms)** | **Execution Time (ms)** |
+| ------------ | ---------------------- | ----------------------- |
+| 8            | 195.9026               | 24282.1556              |
+| 5            | 883.5788               | 518.247                 |
+| 6            | 246.775                | 142.0236                |
+| 1            | 397.452                | 123.204                 |
+| 2            | 285.126                | 116.389                 |
+| 7            | 178.038                | 116.487                 |
+| 4            | 181.137                | 116.387                 |
+| 3            | 188.281                | 101.394                 |
+| 9            | 140.578                | 108.161                 |
+| 10           | 261.7074               | 110.873                 |
 
-Irei levar em conta apenas o tempo de execução para a análise de otimização, pois o tempo de planejamento não é algo que podemos otimizar diretamente, e sim indiretamente através da otimização da query. Então, temos que as consultas mais lentas são: 8, 2 e 7.
+Irei levar em conta apenas o tempo de execução para a análise de otimização, pois o tempo de planejamento não é algo que podemos otimizar diretamente, e sim indiretamente através da otimização da query. Então, temos que as consultas mais lentas, em média, são: 8, 5 e 6.
 
-O resultado para a saída do comando de `EXPLAIN ANALYZE` pode ser encontrado na pasta `resultados` deste repositório.
-
-# Query 7
-
-**Descrição:**
-Listar os nomes dos departamentos com o total de salários pagos (sliding windows function)
-
-```sql
-EXPLAIN ANALYZE SELECT d.dep_id, d.nome AS departamento, SUM(e.salario) AS "Salario total"
-FROM departamentos d
-LEFT OUTER JOIN empregados e ON d.dep_id = e.dep_id
-GROUP BY d.dep_id, d.nome;
-```
-
-| **Query** | **Tempo de Planejamento (ms)** | **Tempo de Execução (ms)** |
-| --------- | ------------------------------ | -------------------------- |
-| 1         | 582.382                        | 269.430                    |
-| 2         | 0.487                          | 11.590                     |
-| 3         | 0.482                          | 14.615                     |
-| 4         | 0.501                          | 10.677                     |
-| 5         | 0.436                          | 10.649                     |
-
-|                            | **Média** | **Desvio Padrão** |
-| -------------------------- | --------- | ----------------- |
-| Tempo de Execução (ms)     | 63.392    | 52.72             |
-| Tempo de Planejamento (ms) | 116.458   | 226.01            |
-
-**Otimizando a Query**:
-
-```sql
-CREATE INDEX idx_empregados_dep_id ON empregados (dep_id);
-CREATE INDEX idx_departamentos_dep_id ON departamentos (dep_id);
-```
-
-```sql
-EXPLAIN ANALYZE SELECT d.dep_id, d.nome AS departamento, SUM(e.salario) AS "Salariototal"
-FROM departamentos d
-INNER JOIN empregados e ON d.dep_id = e.dep_id
-GROUP BY d.dep_id, d.nome;
-```
-
-| **Query** | **Tempo de Planejamento (ms)** | **Tempo de Execução (ms)** |
-| --------- | ------------------------------ | -------------------------- |
-| 1         | 565.606                        | 138.633                    |
-| 2         | 0.400                          | 8.333                      |
-| 3         | 0.415                          | 8.326                      |
-| 4         | 0.398                          | 8.301                      |
-| 5         | 0.418                          | 8.306                      |
-
-|                            | **Média** | **Desvio Padrão** |
-| -------------------------- | --------- | ----------------- |
-| Tempo de Execução (ms)     | 34.57     | 52.72             |
-| Tempo de Planejamento (ms) | 113.647   | 226.996           |
-
-# Query 2
+## Query 5
 
 **Descrição:**
 
-Listar o maior salario de cada departamento (usa o group by)]
+Listar os departamentos com o número de colaboradores
 
 ```sql
-EXPLAIN ANALYZE
-SELECT d.dep_id as x, max(salario) as y
-FROM departamentos d JOIN empregados e
-ON e.dep_id = d.dep_id
-GROUP BY d.dep_id;
-```
-
-| **Query** | **Tempo de Planejamento (ms)** | **Tempo de Execução (ms)** |
-| --------- | ------------------------------ | -------------------------- |
-| 1         | 691.619                        | 274.008                    |
-| 2         | 0.305                          | 7.058                      |
-| 3         | 0.383                          | 6.973                      |
-| 4         | 0.308                          | 6.931                      |
-| 5         | 0.306                          | 6.980                      |
-
-|                            | **Média** | **Desvio Padrão** |
-| -------------------------- | --------- | ----------------- |
-| Tempo de Planejamento (ms) | 138.385   | 282.124           |
-| Tempo de Execução (ms)     | 60.590    | 91.025            |
-
-**Otimizando a Query**:
-
-Crie um index:
-
-```sql
-CREATE INDEX dep_id_index ON departamentos (dep_id);
+EXPLAIN ANALYZE select d.nome, count(e.emp_id)
+from departamentos d
+join empregados e on d.dep_id=e.dep_id
+group by d.nome;
 ```
 
 ```sql
-EXPLAIN ANALYZE
-WITH MaxSalaries AS (,,
-    SELECT dep_id, MAX(salario) AS max_salario
-    FROM empregados
-    GROUP BY dep_id
-)
-SELECT d.dep_id AS x, ms.max_salario AS y
-FROM departamentos d
-JOIN MaxSalaries ms ON d.dep_id = ms.dep_id;
+
+                                                           QUERY PLAN
+--------------------------------------------------------------------------------------------------------------------------------
+ HashAggregate  (cost=710.74..710.95 rows=21 width=22) (actual time=87.298..87.302 rows=21 loops=1)
+   Group Key: d.nome
+   Batches: 1  Memory Usage: 24kB
+   ->  Hash Join  (cost=1.74..610.74 rows=20000 width=18) (actual time=52.511..84.236 rows=19409 loops=1)
+         Hash Cond: (e.dep_id = d.dep_id)
+         ->  Seq Scan on empregados e  (cost=0.00..334.00 rows=20000 width=8) (actual time=19.544..48.100 rows=20000 loops=1)
+         ->  Hash  (cost=1.33..1.33 rows=33 width=18) (actual time=32.950..32.951 rows=33 loops=1)
+               Buckets: 1024  Batches: 1  Memory Usage: 10kB
+               ->  Seq Scan on departamentos d  (cost=0.00..1.33 rows=33 width=18) (actual time=13.807..13.813 rows=33 loops=1)
+ Planning Time: 199.195 ms
+ Execution Time: 105.015 ms
+(11 rows)
 ```
 
-| #   | Planning Time (ms) | Execution Time (ms) |
-| --- | ------------------ | ------------------- |
-| 1   | 246.203            | 114.485             |
-| 2   | 0.444              | 8.211               |
-| 3   | 0.537              | 5.338               |
-| 4   | 0.546              | 6.569               |
-| 5   | 0.546              | 5.152               |
+| Execução | Planejamento (ms) | Execução (ms) |
+| -------- | ----------------- | ------------- |
+| 1        | 199.195           | 105.015       |
+| 2        | 0.330             | 7.444         |
+| 3        | 0.352             | 7.443         |
+| 4        | 0.356             | 7.411         |
+| 5        | 0.346             | 7.422         |
 
-|                            | **Média** | **Desvio Padrão** |
-| -------------------------- | --------- | ----------------- |
-| Tempo de Planejamento (ms) | 49.655    | 98.978            |
-| Tempo de Execução (ms)     | 27.151    | 41.690            |
+### Planejamento (ms)
 
-Apesar de não ter ocorrido uma grande redução nas execuções 2-5, percebemos que a primeira execução já demonstra uma queda significativa. Isso ocorre pois o index é criado apenas uma vez, e depois é utilizado para todas as execuções, enquanto que o tempo de planejamento é calculado para cada execução.
+- Média: 120.916 ms
+- Desvio Padrão: 134.222 ms
 
-# Query 8
+### Execução (ms)
+
+- Média: 26.7476 ms
+- Desvio Padrão: 42.7815 ms
+
+## Query 6
+
+**Descrição:**
+
+Listar os empregados que não possue o seu chefe no mesmo departamento/
+
+```sql
+EXPLAIN ANALYZE select e1.nome, e1.dep_id from empregados e1 join
+empregados e2 on e1.supervisor_id=e2.emp_id
+where e1.dep_id!=e2.dep_id;
+```
+
+### Tempo de Planejamento e Execução
+
+| Execução | Planning Time | Execution Time |
+| -------- | ------------- | -------------- |
+| 1        | 1663.542 ms   | 733.195 ms     |
+| 2        | 0.443 ms      | 11.909 ms      |
+| 3        | 0.573 ms      | 24.900 ms      |
+| 4        | 0.554 ms      | 22.959 ms      |
+| 5        | 0.567 ms      | 23.572 ms      |
+
+### Planejamento (ms)
+
+- Média: 767.1358 ms
+- Desvio Padrão: 696.8528 ms
+
+### Execução (ms)
+
+- Média: 16.781 ms
+- Desvio Padrão: 8.9797 ms
+
+```sql
+                                                          QUERY PLAN
+------------------------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=584.00..1243.00 rows=19393 width=11) (actual time=87.019..91.961 rows=19402 loops=1)
+   Hash Cond: (e1.supervisor_id = e2.emp_id)
+   Join Filter: (e1.dep_id <> e2.dep_id)
+   Rows Removed by Join Filter: 598
+   ->  Seq Scan on empregados e1  (cost=0.00..334.00 rows=20000 width=15) (actual time=19.617..20.613 rows=20000 loops=1)
+   ->  Hash  (cost=334.00..334.00 rows=20000 width=8) (actual time=67.236..67.237 rows=20000 loops=1)
+         Buckets: 32768  Batches: 1  Memory Usage: 1038kB
+         ->  Seq Scan on empregados e2  (cost=0.00..334.00 rows=20000 width=8) (actual time=0.009..42.091 rows=20000 loops=1)
+ Planning Time: 207.864 ms
+ Execution Time: 100.965 ms
+(10 rows)
+```
+
+O plano de consulta indicado mostra um custo alto devido à execução de duas varreduras sequenciais (Seq Scan) nas tabelas de empregados. É possível otimizar essa consulta criando índices apropriados para melhorar o desempenho.
+
+```sql
+CREATE INDEX idx_e1_supervisor_id ON empregados(supervisor_id);
+CREATE INDEX idx_e2_dep_id ON empregados(dep_id);
+CREATE INDEX idx_e2_emp_id ON empregados(emp_id);
+```
+
+| **Planejamento (ms)** | **Execução (ms)** |
+| --------------------- | ----------------- |
+| 187.652               | 196.599           |
+| 12.598                | 13.377            |
+| 9.551                 | 10.261            |
+| 11.672                | 12.414            |
+| 15.658                | 16.650            |
+
+```sql
+                                                                QUERY PLAN
+-------------------------------------------------------------------------------------------------------------------------------------------
+ Nested Loop  (cost=0.30..959.82 rows=19393 width=11) (actual time=75.127..187.652 rows=19402 loops=1)
+   ->  Seq Scan on empregados e1  (cost=0.00..334.00 rows=20000 width=15) (actual time=75.078..179.466 rows=20000 loops=1)
+   ->  Memoize  (cost=0.30..0.36 rows=1 width=8) (actual time=0.000..0.000 rows=1 loops=20000)
+         Cache Key: e1.dep_id, e1.supervisor_id
+         Cache Mode: binary
+         Hits: 19668  Misses: 332  Evictions: 0  Overflows: 0  Memory Usage: 36kB
+         ->  Index Scan using idx_e2_emp_id on empregados e2  (cost=0.29..0.35 rows=1 width=8) (actual time=0.001..0.001 rows=1 loops=332)
+               Index Cond: (emp_id = e1.supervisor_id)
+               Filter: (e1.dep_id <> dep_id)
+               Rows Removed by Filter: 0
+ Planning Time: 448.074 ms
+ Execution Time: 196.599 ms
+(12 rows)
+```
+
+```sql
+EXPLAIN ANALYZE SELECT e1.nome, e1.dep_id
+FROM empregados e1
+LEFT JOIN empregados e2 ON e1.supervisor_id = e2.emp_id AND e1.dep_id <> e2.dep_id
+WHERE e2.emp_id IS NOT NULL;
+```
+
+| Planejamento (ms) | Execução (ms) |
+| ----------------- | ------------- |
+| 336.746           | 73.970        |
+| 0.683             | 25.207        |
+| 0.671             | 11.280        |
+| 0.642             | 11.669        |
+| 0.511             | 9.692         |
+
+```sql
+                                                                QUERY PLAN
+-------------------------------------------------------------------------------------------------------------------------------------------
+ Nested Loop  (cost=0.30..960.73 rows=19393 width=11) (actual time=19.606..64.817 rows=19402 loops=1)
+   ->  Seq Scan on empregados e1  (cost=0.00..334.00 rows=20000 width=15) (actual time=19.559..55.383 rows=20000 loops=1)
+   ->  Memoize  (cost=0.30..0.36 rows=1 width=8) (actual time=0.000..0.000 rows=1 loops=20000)
+         Cache Key: e1.dep_id, e1.supervisor_id
+         Cache Mode: binary
+         Hits: 19668  Misses: 332  Evictions: 0  Overflows: 0  Memory Usage: 36kB
+         ->  Index Scan using idx_e2_emp_id on empregados e2  (cost=0.29..0.35 rows=1 width=8) (actual time=0.001..0.001 rows=1 loops=332)
+               Index Cond: ((emp_id = e1.supervisor_id) AND (emp_id IS NOT NULL))
+               Filter: (e1.dep_id <> dep_id)
+               Rows Removed by Filter: 0
+ Planning Time: 336.746 ms
+ Execution Time: 73.970 ms
+(12 rows)
+
+```
+
+## Query 8
 
 **Descrição:**
 Listar os nomes dos colaboradores com salario maior que a média do seu departamento (dica: usar subconsultas);
@@ -188,45 +223,40 @@ from empregados e2
 where e1.dep_id = e2.dep_id);
 ```
 
-| **Query** | **Tempo de Planejamento (ms)** | **Tempo de Execução (ms)** |
-| --------- | ------------------------------ | -------------------------- |
-| 1         | 258.138                        | 85.826                     |
-| 2         | 0.342                          | 7.024                      |
-| 3         | 0.539                          | 17.619                     |
-| 4         | 0.512                          | 12.550                     |
-| 5         | 0.344                          | 7.457                      |
-
-|                            | **Média** | **Desvio Padrão** |
-| -------------------------- | --------- | ----------------- |
-| Tempo de Planejamento (ms) | 51.975    | 102.935           |
-| Tempo de Execução (ms)     | 26.495    | 36.598            |
-
-**Otimizando a Query**:
-
 ```sql
-EXPLAIN ANALYSE SELECT e1.emp_id, e1.nome, e1.dep_id, e1.salario
-FROM empregados e1
-JOIN (
-    SELECT dep_id, AVG(salario) AS salario_medio
-    FROM empregados
-    GROUP BY dep_id
-) s ON e1.dep_id = s.dep_id
-WHERE e1.salario > s.salario_medio;
+                                                          QUERY PLAN
+-------------------------------------------------------------------------------------------------------------------------------
+ Seq Scan on empregados e1  (cost=0.00..7710984.00 rows=6667 width=19) (actual time=1236.394..16445.748 rows=10013 loops=1)
+   Filter: ((salario)::numeric > (SubPlan 1))
+   Rows Removed by Filter: 9987
+   SubPlan 1
+     ->  Aggregate  (cost=385.52..385.53 rows=1 width=32) (actual time=0.761..0.761 rows=1 loops=20000)
+           ->  Seq Scan on empregados e2  (cost=0.00..384.00 rows=606 width=4) (actual time=0.002..0.730 rows=607 loops=20000)
+                 Filter: (e1.dep_id = dep_id)
+                 Rows Removed by Filter: 19393
+ Planning Time: 182.612 ms
+ JIT:
+   Functions: 11
+   Options: Inlining true, Optimization true, Expressions true, Deforming true
+   Timing: Generation 86.439 ms, Inlining 427.239 ms, Optimization 358.254 ms, Emission 399.381 ms, Total 1271.314 ms
+ Execution Time: 21019.391 ms
+(14 rows)
 ```
 
-| **Query** | **Tempo de Planejamento (ms)** | **Tempo de Execução (ms)** |
-| --------- | ------------------------------ | -------------------------- |
-| 1         | 212.886                        | 43.724                     |
-| 2         | 0.415                          | 11.368                     |
-| 3         | 0.404                          | 11.286                     |
-| 4         | 0.404                          | 11.286                     |
-| 5         | 0.435                          | 11.518                     |
-| 6         | 0.435                          | 11.518                     |
-| 7         | 0.403                          | 11.195                     |
+| Query | Tempo de Planejamento (ms) | Tempo de Execução (ms) |
+| ----- | -------------------------- | ---------------------- |
+| 1     | 182.612                    | 21019.391              |
+| 2     | 0.214                      | 16000.250              |
+| 3     | 0.228                      | 19216.829              |
+| 4     | 0.214                      | 16785.263              |
+| 5     | 0.228                      | 17654.500              |
 
-|                            | **Média** | **Desvio Padrão** |
-| -------------------------- | --------- | ----------------- |
-| Tempo de Planejamento (ms) | 35.575    | 76.084            |
-| Tempo de Execução (ms)     | 13.974    | 14.598            |
+### Planejamento (ms)
 
-A partir dos valores de média entre os tempos de Execução, percebemos que as alterações feitas permitiram uma redução de 52.74% no tempo, uma diferença de 12,52ms entre as execuções.
+- Média: 36.4992 ms
+- Desvio Padrão: 81.2145 ms
+
+### Execução (ms)
+
+- Média: 18115.0466 ms
+- Desvio Padrão: 1933.0646 ms
