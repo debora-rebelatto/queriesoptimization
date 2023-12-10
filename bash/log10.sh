@@ -95,6 +95,35 @@ sudo service postgresql start
 
 for i in {1..5}
 do
+    psql -d dojo -c "EXPLAIN ANALYZE
+SELECT d.nome, count(e.emp_id)
+FROM departamentos d
+JOIN empregados e ON d.dep_id = e.dep_id
+GROUP BY d.nome;" >> output5-nested.txt
+done
+
+
+sudo service postgresql stop
+sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
+sudo service postgresql start
+
+for i in {1..5}
+do
+    psql -d dojo -c "EXPLAIN ANALYZE
+SELECT d.nome, count(e.emp_id)
+FROM departamentos d
+JOIN empregados e ON d.dep_id = e.dep_id
+GROUP BY d.nome;
+" >> output5-merge.txt
+done
+
+
+sudo service postgresql stop
+sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
+sudo service postgresql start
+
+for i in {1..5}
+do
     psql -d dojo -c "EXPLAIN ANALYZE select e1.nome, e1.dep_id from empregados e1 join
 empregados e2 on e1.supervisor_id=e2.emp_id
 where e1.dep_id!=e2.dep_id;
@@ -141,6 +170,49 @@ from empregados e2
 where e1.dep_id = e2.dep_id);
 " >> output8.txt
 done
+
+
+sudo service postgresql stop
+sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
+sudo service postgresql start
+
+for i in {1..5}
+do
+    psql -d dojo -c "EXPLAIN ANALYZE
+SELECT e1.emp_id, e1.nome, e1.dep_id, e1.salario
+FROM empregados e1
+JOIN (
+    SELECT dep_id, AVG(salario) AS media_salario
+    FROM empregados
+    GROUP BY dep_id
+) AS avg_salarios
+ON e1.dep_id = avg_salarios.dep_id
+WHERE e1.salario > avg_salarios.media_salario;
+" >> output8-1.txt
+done
+
+
+sudo service postgresql stop
+sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
+sudo service postgresql start
+
+for i in {1..5}
+do
+    psql -d dojo -c "EXPLAIN ANALYZE
+SELECT e1.emp_id, e1.nome, e1.dep_id, e1.salario
+FROM empregados e1
+JOIN (
+    SELECT dep_id, AVG(salario) AS media_salario
+    FROM empregados
+    GROUP BY dep_id
+) AS avg_salarios
+ON e1.dep_id = avg_salarios.dep_id
+WHERE e1.salario > avg_salarios.media_salario;
+" >> output8-4.txt
+done
+
+
+
 
 
 sudo service postgresql stop

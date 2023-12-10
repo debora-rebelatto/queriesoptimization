@@ -1,0 +1,170 @@
+                                                           QUERY PLAN
+---------------------------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=435.15..824.91 rows=6667 width=19) (actual time=75.740..82.271 rows=10013 loops=1)
+   Hash Cond: (e1.dep_id = empregados.dep_id)
+   Join Filter: ((e1.salario)::numeric > (avg(empregados.salario)))
+   Rows Removed by Join Filter: 9987
+   ->  Seq Scan on empregados e1  (cost=0.00..334.00 rows=20000 width=19) (actual time=19.537..20.581 rows=20000 loops=1)
+   ->  Hash  (cost=434.74..434.74 rows=33 width=36) (actual time=56.181..56.182 rows=33 loops=1)
+         Buckets: 1024  Batches: 1  Memory Usage: 10kB
+         ->  HashAggregate  (cost=434.00..434.41 rows=33 width=36) (actual time=56.156..56.169 rows=33 loops=1)
+               Group Key: empregados.dep_id
+               Batches: 1  Memory Usage: 24kB
+               ->  Seq Scan on empregados  (cost=0.00..334.00 rows=20000 width=8) (actual time=0.006..31.387 rows=20000 loops=1)
+ Planning Time: 186.080 ms
+ Execution Time: 91.072 ms
+(13 rows)
+
+                                                           QUERY PLAN                                                           
+--------------------------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=435.15..824.91 rows=6667 width=19) (actual time=4.381..10.862 rows=10013 loops=1)
+   Hash Cond: (e1.dep_id = empregados.dep_id)
+   Join Filter: ((e1.salario)::numeric > (avg(empregados.salario)))
+   Rows Removed by Join Filter: 9987
+   ->  Seq Scan on empregados e1  (cost=0.00..334.00 rows=20000 width=19) (actual time=0.005..1.026 rows=20000 loops=1)
+   ->  Hash  (cost=434.74..434.74 rows=33 width=36) (actual time=4.363..4.363 rows=33 loops=1)
+         Buckets: 1024  Batches: 1  Memory Usage: 10kB
+         ->  HashAggregate  (cost=434.00..434.41 rows=33 width=36) (actual time=4.341..4.354 rows=33 loops=1)
+               Group Key: empregados.dep_id
+               Batches: 1  Memory Usage: 24kB
+               ->  Seq Scan on empregados  (cost=0.00..334.00 rows=20000 width=8) (actual time=0.003..1.025 rows=20000 loops=1)
+ Planning Time: 0.362 ms
+ Execution Time: 11.217 ms
+(13 rows)
+
+                                                           QUERY PLAN                                                           
+--------------------------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=435.15..824.91 rows=6667 width=19) (actual time=4.388..10.861 rows=10013 loops=1)
+   Hash Cond: (e1.dep_id = empregados.dep_id)
+   Join Filter: ((e1.salario)::numeric > (avg(empregados.salario)))
+   Rows Removed by Join Filter: 9987
+   ->  Seq Scan on empregados e1  (cost=0.00..334.00 rows=20000 width=19) (actual time=0.004..1.024 rows=20000 loops=1)
+   ->  Hash  (cost=434.74..434.74 rows=33 width=36) (actual time=4.370..4.371 rows=33 loops=1)
+         Buckets: 1024  Batches: 1  Memory Usage: 10kB
+         ->  HashAggregate  (cost=434.00..434.41 rows=33 width=36) (actual time=4.348..4.361 rows=33 loops=1)
+               Group Key: empregados.dep_id
+               Batches: 1  Memory Usage: 24kB
+               ->  Seq Scan on empregados  (cost=0.00..334.00 rows=20000 width=8) (actual time=0.003..1.032 rows=20000 loops=1)
+ Planning Time: 0.359 ms
+ Execution Time: 11.204 ms
+(13 rows)
+
+                                                           QUERY PLAN                                                           
+--------------------------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=435.15..824.91 rows=6667 width=19) (actual time=4.672..19.940 rows=10013 loops=1)
+   Hash Cond: (e1.dep_id = empregados.dep_id)
+   Join Filter: ((e1.salario)::numeric > (avg(empregados.salario)))
+   Rows Removed by Join Filter: 9987
+   ->  Seq Scan on empregados e1  (cost=0.00..334.00 rows=20000 width=19) (actual time=0.005..2.149 rows=20000 loops=1)
+   ->  Hash  (cost=434.74..434.74 rows=33 width=36) (actual time=4.653..4.655 rows=33 loops=1)
+         Buckets: 1024  Batches: 1  Memory Usage: 10kB
+         ->  HashAggregate  (cost=434.00..434.41 rows=33 width=36) (actual time=4.627..4.640 rows=33 loops=1)
+               Group Key: empregados.dep_id
+               Batches: 1  Memory Usage: 24kB
+               ->  Seq Scan on empregados  (cost=0.00..334.00 rows=20000 width=8) (actual time=0.003..1.073 rows=20000 loops=1)
+ Planning Time: 0.360 ms
+ Execution Time: 20.632 ms
+(13 rows)
+
+                                                           QUERY PLAN                                                           
+--------------------------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=435.15..824.91 rows=6667 width=19) (actual time=4.399..10.913 rows=10013 loops=1)
+   Hash Cond: (e1.dep_id = empregados.dep_id)
+   Join Filter: ((e1.salario)::numeric > (avg(empregados.salario)))
+   Rows Removed by Join Filter: 9987
+   ->  Seq Scan on empregados e1  (cost=0.00..334.00 rows=20000 width=19) (actual time=0.009..1.045 rows=20000 loops=1)
+   ->  Hash  (cost=434.74..434.74 rows=33 width=36) (actual time=4.369..4.370 rows=33 loops=1)
+         Buckets: 1024  Batches: 1  Memory Usage: 10kB
+         ->  HashAggregate  (cost=434.00..434.41 rows=33 width=36) (actual time=4.342..4.360 rows=33 loops=1)
+               Group Key: empregados.dep_id
+               Batches: 1  Memory Usage: 24kB
+               ->  Seq Scan on empregados  (cost=0.00..334.00 rows=20000 width=8) (actual time=0.003..1.027 rows=20000 loops=1)
+ Planning Time: 0.347 ms
+ Execution Time: 11.264 ms
+(13 rows)
+
+                                                           QUERY PLAN                                                            
+---------------------------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=435.15..824.91 rows=6667 width=19) (actual time=76.088..82.624 rows=10013 loops=1)
+   Hash Cond: (e1.dep_id = empregados.dep_id)
+   Join Filter: ((e1.salario)::numeric > (avg(empregados.salario)))
+   Rows Removed by Join Filter: 9987
+   ->  Seq Scan on empregados e1  (cost=0.00..334.00 rows=20000 width=19) (actual time=19.530..20.578 rows=20000 loops=1)
+   ->  Hash  (cost=434.74..434.74 rows=33 width=36) (actual time=56.536..56.537 rows=33 loops=1)
+         Buckets: 1024  Batches: 1  Memory Usage: 10kB
+         ->  HashAggregate  (cost=434.00..434.41 rows=33 width=36) (actual time=56.511..56.523 rows=33 loops=1)
+               Group Key: empregados.dep_id
+               Batches: 1  Memory Usage: 24kB
+               ->  Seq Scan on empregados  (cost=0.00..334.00 rows=20000 width=8) (actual time=0.006..30.895 rows=20000 loops=1)
+ Planning Time: 186.166 ms
+ Execution Time: 91.418 ms
+(13 rows)
+
+                                                           QUERY PLAN                                                           
+--------------------------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=435.15..824.91 rows=6667 width=19) (actual time=10.267..25.986 rows=10013 loops=1)
+   Hash Cond: (e1.dep_id = empregados.dep_id)
+   Join Filter: ((e1.salario)::numeric > (avg(empregados.salario)))
+   Rows Removed by Join Filter: 9987
+   ->  Seq Scan on empregados e1  (cost=0.00..334.00 rows=20000 width=19) (actual time=0.007..2.459 rows=20000 loops=1)
+   ->  Hash  (cost=434.74..434.74 rows=33 width=36) (actual time=10.240..10.242 rows=33 loops=1)
+         Buckets: 1024  Batches: 1  Memory Usage: 10kB
+         ->  HashAggregate  (cost=434.00..434.41 rows=33 width=36) (actual time=10.195..10.219 rows=33 loops=1)
+               Group Key: empregados.dep_id
+               Batches: 1  Memory Usage: 24kB
+               ->  Seq Scan on empregados  (cost=0.00..334.00 rows=20000 width=8) (actual time=0.004..2.148 rows=20000 loops=1)
+ Planning Time: 0.593 ms
+ Execution Time: 26.743 ms
+(13 rows)
+
+                                                           QUERY PLAN                                                           
+--------------------------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=435.15..824.91 rows=6667 width=19) (actual time=4.624..11.670 rows=10013 loops=1)
+   Hash Cond: (e1.dep_id = empregados.dep_id)
+   Join Filter: ((e1.salario)::numeric > (avg(empregados.salario)))
+   Rows Removed by Join Filter: 9987
+   ->  Seq Scan on empregados e1  (cost=0.00..334.00 rows=20000 width=19) (actual time=0.005..1.125 rows=20000 loops=1)
+   ->  Hash  (cost=434.74..434.74 rows=33 width=36) (actual time=4.604..4.605 rows=33 loops=1)
+         Buckets: 1024  Batches: 1  Memory Usage: 10kB
+         ->  HashAggregate  (cost=434.00..434.41 rows=33 width=36) (actual time=4.576..4.589 rows=33 loops=1)
+               Group Key: empregados.dep_id
+               Batches: 1  Memory Usage: 24kB
+               ->  Seq Scan on empregados  (cost=0.00..334.00 rows=20000 width=8) (actual time=0.003..1.098 rows=20000 loops=1)
+ Planning Time: 0.572 ms
+ Execution Time: 12.065 ms
+(13 rows)
+
+                                                           QUERY PLAN                                                           
+--------------------------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=435.15..824.91 rows=6667 width=19) (actual time=4.863..14.579 rows=10013 loops=1)
+   Hash Cond: (e1.dep_id = empregados.dep_id)
+   Join Filter: ((e1.salario)::numeric > (avg(empregados.salario)))
+   Rows Removed by Join Filter: 9987
+   ->  Seq Scan on empregados e1  (cost=0.00..334.00 rows=20000 width=19) (actual time=0.005..1.474 rows=20000 loops=1)
+   ->  Hash  (cost=434.74..434.74 rows=33 width=36) (actual time=4.843..4.844 rows=33 loops=1)
+         Buckets: 1024  Batches: 1  Memory Usage: 10kB
+         ->  HashAggregate  (cost=434.00..434.41 rows=33 width=36) (actual time=4.810..4.823 rows=33 loops=1)
+               Group Key: empregados.dep_id
+               Batches: 1  Memory Usage: 24kB
+               ->  Seq Scan on empregados  (cost=0.00..334.00 rows=20000 width=8) (actual time=0.003..1.111 rows=20000 loops=1)
+ Planning Time: 0.380 ms
+ Execution Time: 15.080 ms
+(13 rows)
+
+                                                           QUERY PLAN                                                           
+--------------------------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=435.15..824.91 rows=6667 width=19) (actual time=4.467..11.587 rows=10013 loops=1)
+   Hash Cond: (e1.dep_id = empregados.dep_id)
+   Join Filter: ((e1.salario)::numeric > (avg(empregados.salario)))
+   Rows Removed by Join Filter: 9987
+   ->  Seq Scan on empregados e1  (cost=0.00..334.00 rows=20000 width=19) (actual time=0.005..1.138 rows=20000 loops=1)
+   ->  Hash  (cost=434.74..434.74 rows=33 width=36) (actual time=4.446..4.449 rows=33 loops=1)
+         Buckets: 1024  Batches: 1  Memory Usage: 10kB
+         ->  HashAggregate  (cost=434.00..434.41 rows=33 width=36) (actual time=4.418..4.431 rows=33 loops=1)
+               Group Key: empregados.dep_id
+               Batches: 1  Memory Usage: 24kB
+               ->  Seq Scan on empregados  (cost=0.00..334.00 rows=20000 width=8) (actual time=0.003..1.040 rows=20000 loops=1)
+ Planning Time: 0.399 ms
+ Execution Time: 11.988 ms
+(13 rows)
+

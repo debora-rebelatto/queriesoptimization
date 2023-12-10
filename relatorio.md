@@ -84,6 +84,18 @@ group by d.nome;
 | 4        | 0.356             | 7.411         |
 | 5        | 0.346             | 7.422         |
 
+Certamente! Aqui estão os valores de "Planning Time" e "Execution Time" para as consultas fornecidas:
+
+| Consulta | Planning Time (ms) | Execution Time (ms) |
+| -------- | ------------------ | ------------------- |
+| 1        | 532.443            | 261.378             |
+| 2        | 0.486              | 8.387               |
+| 3        | 0.487              | 8.221               |
+| 4        | 0.653              | 7.832               |
+| 5        | 0.483              | 9.288               |
+
+Estes valores representam o tempo estimado de planejamento (Planning Time) e o tempo real de execução (Execution Time) das consultas apresentadas.
+
 ### Planejamento (ms)
 
 - Média: 120.916 ms
@@ -260,3 +272,28 @@ where e1.dep_id = e2.dep_id);
 
 - Média: 18115.0466 ms
 - Desvio Padrão: 1933.0646 ms
+
+Percebemos facilmente que esta query não está bem construída então a primeira coisa que iremos fazer é reorganizar a consulta para que ela seja mais eficiente.
+
+```sql
+EXPLAIN ANALYZE
+SELECT e1.emp_id, e1.nome, e1.dep_id, e1.salario
+FROM empregados e1
+JOIN (
+    SELECT dep_id, AVG(salario) AS media_salario
+    FROM empregados
+    GROUP BY dep_id
+) AS avg_salarios
+ON e1.dep_id = avg_salarios.dep_id
+WHERE e1.salario > avg_salarios.media_salario;
+```
+
+| Execução | Tempo de Planejamento (ms) | Tempo de Execução (ms) |
+| -------- | -------------------------- | ---------------------- |
+| 1        | 186.080                    | 91.072                 |
+| 2        | 0.362                      | 11.217                 |
+| 3        | 0.359                      | 11.204                 |
+| 4        | 0.360                      | 20.632                 |
+| 5        | 0.347                      | 11.264                 |
+
+Só isso já reduziu significativamente o tempo de execução da query, mas ainda podemos melhorar mais.
