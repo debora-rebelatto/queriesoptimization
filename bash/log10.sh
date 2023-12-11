@@ -14,6 +14,39 @@ WHERE e2.salario < e.salario;
 " >> output1.txt
 done
 
+
+
+
+sudo service postgresql stop
+sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
+sudo service postgresql start
+
+for i in {1..5}
+do
+    psql -d dojo -c "EXPLAIN ANALYZE
+SELECT e.nome AS "empregado", e2.nome AS "chefe", e.salario AS "empsal", e2.salario AS "chefsal"
+FROM empregados e, empregados e2
+WHERE e2.emp_id = e.supervisor_id AND e2.salario < e.salario;
+" >> output1-optimized-04.txt
+done
+
+
+    psql -d dojo -c "
+SELECT supervisor_id, MIN(salario) AS min_sal
+FROM empregados
+GROUP BY supervisor_id
+ORDER BY supervisor_id;
+
+" >> output1-optimized-04-test.txt
+
+    psql -d dojo -c "
+SELECT e.nome as "empregado", e2.nome as "chefe" , e.salario as "empsal" , e2.salario as "chefsal"
+FROM empregados e
+JOIN empregados e2 ON e.supervisor_id = e2.emp_id
+WHERE e2.salario < e.salario;
+" >> output1-TEXT.txt
+
+
 sudo service postgresql stop
 sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
 sudo service postgresql start

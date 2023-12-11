@@ -65,13 +65,13 @@ WHERE e2.salario < e.salario;
 
 ### Planejamento (ms)
 
-- Média: 61.241 ms
-- Desvio Padrão: 123.755 ms
+- Média: 61.841 ms
+- Desvio Padrão: 206.392 ms
 
 ### Execução (ms)
 
-- Média: 45.844 ms
-- Desvio Padrão: 68.996 ms
+- Média: 45.244 ms
+- Desvio Padrão: 57.253 ms
 
 ```sql
                                                           QUERY PLAN
@@ -88,6 +88,52 @@ WHERE e2.salario < e.salario;
  Execution Time: 178.536 ms
 (10 rows)
 ```
+
+**Otimização da query**
+
+```sql
+CREATE INDEX idx_empregados_emp_id ON empregados (emp_id);
+CREATE INDEX idx_empregados_supervisor_id_salario ON empregados (supervisor_id, salario);
+```
+
+| Planning Time | Execution Time |
+| ------------- | -------------- |
+| 503.566 ms    | 115.228 ms     |
+| 0.668 ms      | 11.800 ms      |
+| 0.613 ms      | 9.151 ms       |
+| 0.614 ms      | 9.099 ms       |
+| 0.604 ms      | 9.003 ms       |
+
+### Planejamento (ms)
+
+- Média: 101.2134 ms
+- Desvio Padrão: 127.7033 ms
+
+### Execução (ms)
+
+- Média: 30.6562 ms
+- Desvio Padrão: 38.3963 ms
+
+```sql
+                                                                     QUERY PLAN
+----------------------------------------------------------------------------------------------------------------------------------------------------
+ Nested Loop  (cost=0.30..1172.76 rows=6667 width=22) (actual time=96.850..106.488 rows=9409 loops=1)
+   ->  Seq Scan on empregados e  (cost=0.00..334.00 rows=20000 width=15) (actual time=29.013..40.519 rows=20000 loops=1)
+   ->  Memoize  (cost=0.30..0.36 rows=1 width=15) (actual time=0.003..0.003 rows=0 loops=20000)
+         Cache Key: e.salario, e.supervisor_id
+         Cache Mode: binary
+         Hits: 19108  Misses: 892  Evictions: 0  Overflows: 0  Memory Usage: 83kB
+         ->  Index Scan using idx_empregados_emp_id on empregados e2  (cost=0.29..0.35 rows=1 width=15) (actual time=0.066..0.066 rows=0 loops=892)
+               Index Cond: (emp_id = e.supervisor_id)
+               Filter: (salario < e.salario)
+               Rows Removed by Filter: 1
+ Planning Time: 503.566 ms
+ Execution Time: 115.228 ms
+(12 rows)
+```
+
+Sem alterações na query, apenas com a criação de índices, já conseguimos uma melhora significativa no tempo de execução.
+Apesar do tempo no Nested Loop ainda ser alto, a média geral de tempo da query foi reduzida o que já é um bom resultado.
 
 ## Query 6
 

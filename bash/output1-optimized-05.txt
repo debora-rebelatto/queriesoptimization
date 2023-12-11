@@ -1,0 +1,80 @@
+                                                                     QUERY PLAN
+----------------------------------------------------------------------------------------------------------------------------------------------------
+ Nested Loop  (cost=0.30..1172.76 rows=6667 width=22) (actual time=80.082..89.252 rows=9409 loops=1)
+   ->  Seq Scan on empregados e  (cost=0.00..334.00 rows=20000 width=15) (actual time=47.800..50.126 rows=20000 loops=1)
+   ->  Memoize  (cost=0.30..0.36 rows=1 width=15) (actual time=0.002..0.002 rows=0 loops=20000)
+         Cache Key: e.salario, e.supervisor_id
+         Cache Mode: binary
+         Hits: 19108  Misses: 892  Evictions: 0  Overflows: 0  Memory Usage: 83kB
+         ->  Index Scan using idx_empregados_emp_id on empregados e2  (cost=0.29..0.35 rows=1 width=15) (actual time=0.036..0.036 rows=0 loops=892)
+               Index Cond: (emp_id = e.supervisor_id)
+               Filter: (salario < e.salario)
+               Rows Removed by Filter: 1
+ Planning Time: 441.211 ms
+ Execution Time: 90.292 ms
+(12 rows)
+
+                                                                     QUERY PLAN
+----------------------------------------------------------------------------------------------------------------------------------------------------
+ Nested Loop  (cost=0.30..1172.76 rows=6667 width=22) (actual time=0.555..8.947 rows=9409 loops=1)
+   ->  Seq Scan on empregados e  (cost=0.00..334.00 rows=20000 width=15) (actual time=0.004..1.364 rows=20000 loops=1)
+   ->  Memoize  (cost=0.30..0.36 rows=1 width=15) (actual time=0.000..0.000 rows=0 loops=20000)
+         Cache Key: e.salario, e.supervisor_id
+         Cache Mode: binary
+         Hits: 19108  Misses: 892  Evictions: 0  Overflows: 0  Memory Usage: 83kB
+         ->  Index Scan using idx_empregados_emp_id on empregados e2  (cost=0.29..0.35 rows=1 width=15) (actual time=0.001..0.001 rows=0 loops=892)
+               Index Cond: (emp_id = e.supervisor_id)
+               Filter: (salario < e.salario)
+               Rows Removed by Filter: 1
+ Planning Time: 0.615 ms
+ Execution Time: 9.272 ms
+(12 rows)
+
+                                                                     QUERY PLAN                                                                     
+----------------------------------------------------------------------------------------------------------------------------------------------------
+ Nested Loop  (cost=0.30..1172.76 rows=6667 width=22) (actual time=0.563..8.733 rows=9409 loops=1)
+   ->  Seq Scan on empregados e  (cost=0.00..334.00 rows=20000 width=15) (actual time=0.004..1.292 rows=20000 loops=1)
+   ->  Memoize  (cost=0.30..0.36 rows=1 width=15) (actual time=0.000..0.000 rows=0 loops=20000)
+         Cache Key: e.salario, e.supervisor_id
+         Cache Mode: binary
+         Hits: 19108  Misses: 892  Evictions: 0  Overflows: 0  Memory Usage: 83kB
+         ->  Index Scan using idx_empregados_emp_id on empregados e2  (cost=0.29..0.35 rows=1 width=15) (actual time=0.001..0.001 rows=0 loops=892)
+               Index Cond: (emp_id = e.supervisor_id)
+               Filter: (salario < e.salario)
+               Rows Removed by Filter: 1
+ Planning Time: 0.662 ms
+ Execution Time: 9.061 ms
+(12 rows)
+
+                                                                     QUERY PLAN
+----------------------------------------------------------------------------------------------------------------------------------------------------
+ Nested Loop  (cost=0.30..1172.76 rows=6667 width=22) (actual time=0.561..8.941 rows=9409 loops=1)
+   ->  Seq Scan on empregados e  (cost=0.00..334.00 rows=20000 width=15) (actual time=0.004..1.353 rows=20000 loops=1)
+   ->  Memoize  (cost=0.30..0.36 rows=1 width=15) (actual time=0.000..0.000 rows=0 loops=20000)
+         Cache Key: e.salario, e.supervisor_id
+         Cache Mode: binary
+         Hits: 19108  Misses: 892  Evictions: 0  Overflows: 0  Memory Usage: 83kB
+         ->  Index Scan using idx_empregados_emp_id on empregados e2  (cost=0.29..0.35 rows=1 width=15) (actual time=0.001..0.001 rows=0 loops=892)
+               Index Cond: (emp_id = e.supervisor_id)
+               Filter: (salario < e.salario)
+               Rows Removed by Filter: 1
+ Planning Time: 0.621 ms
+ Execution Time: 9.273 ms
+(12 rows)
+
+                                                                     QUERY PLAN
+----------------------------------------------------------------------------------------------------------------------------------------------------
+ Nested Loop  (cost=0.30..1172.76 rows=6667 width=22) (actual time=0.572..8.948 rows=9409 loops=1)
+   ->  Seq Scan on empregados e  (cost=0.00..334.00 rows=20000 width=15) (actual time=0.004..1.385 rows=20000 loops=1)
+   ->  Memoize  (cost=0.30..0.36 rows=1 width=15) (actual time=0.000..0.000 rows=0 loops=20000)
+         Cache Key: e.salario, e.supervisor_id
+         Cache Mode: binary
+         Hits: 19108  Misses: 892  Evictions: 0  Overflows: 0  Memory Usage: 83kB
+         ->  Index Scan using idx_empregados_emp_id on empregados e2  (cost=0.29..0.35 rows=1 width=15) (actual time=0.001..0.001 rows=0 loops=892)
+               Index Cond: (emp_id = e.supervisor_id)
+               Filter: (salario < e.salario)
+               Rows Removed by Filter: 1
+ Planning Time: 0.613 ms
+ Execution Time: 9.280 ms
+(12 rows)
+
